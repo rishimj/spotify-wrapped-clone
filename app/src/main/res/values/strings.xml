@@ -74,5 +74,6 @@
     <string name="disable_dark_mode">Disable Dark Mode</string>
     <string name="spotify_wrapped">Spotify Wrapped</string>
     <string name="sign_up">Sign Up</string>
+    <string name="title_activity_spotify">SpotifyActivity</string>
 
 </resources>

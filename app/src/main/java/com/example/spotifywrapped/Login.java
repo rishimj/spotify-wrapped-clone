@@ -48,6 +48,7 @@ public class Login extends AppCompatActivity {
     BeginSignInRequest signInRequest;
     GoogleSignInClient googleSignInClient;
 
+    /*
     @Override
     public void onStart() {
         super.onStart();
@@ -60,6 +61,8 @@ public class Login extends AppCompatActivity {
             finish();
         }
     }
+
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

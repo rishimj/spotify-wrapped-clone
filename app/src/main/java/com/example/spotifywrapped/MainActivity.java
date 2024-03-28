@@ -1,6 +1,7 @@
 package com.example.spotifywrapped;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,8 +20,6 @@ import com.example.spotifywrapped.databinding.ActivityMainBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,6 +27,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.spotify.sdk.android.auth.AuthorizationClient;
+import com.spotify.sdk.android.auth.AuthorizationRequest;
+import com.spotify.sdk.android.auth.AuthorizationResponse;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +38,17 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.HashMap;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,24 +60,56 @@ public class MainActivity extends AppCompatActivity {
     Button settingsButton;
     Button backgroundModeButton;
     TextView textView;
+    TextView tokenTextView, codeTextView, profileTextView;
     FirebaseUser user;
     boolean isNightModeOn;
+    String userId;
+
+    private final OkHttpClient mOkHttpClient = new OkHttpClient();
+    private String mAccessToken, mAccessCode;
+    private Call mCall;
+
+    public User userInfo;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_main);
+        /*
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+         */
+
         auth = FirebaseAuth.getInstance();
-        sign_out_button = findViewById(R.id.sign_out_button);
-        settingsButton = findViewById(R.id.settings);
-        textView = findViewById(R.id.user_details);
-        backgroundModeButton = findViewById(R.id.background_mode_button);
+        sign_out_button = (Button) findViewById(R.id.sign_out_button);
+        settingsButton = (Button) findViewById(R.id.settings);
+        textView = (TextView) findViewById(R.id.user_details);
+        backgroundModeButton = (Button) findViewById(R.id.background_mode_button);
+
 
         user = auth.getCurrentUser();
 
+        Button loginButton = (Button) findViewById(R.id.button_to_spotify);
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent  = new Intent(getApplicationContext(), SpotifyActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
+        //getToken();
+
+        //getCode();
+
+
+
+        /*
         if (user == null) {
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
@@ -72,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
         } else {
             textView.setText(String.format("Welcome back %s", user.getEmail()));
         }
+
+         */
 
         sign_out_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        addDatabase();
+        // addDatabase();
 
 
     //ADD action bar
