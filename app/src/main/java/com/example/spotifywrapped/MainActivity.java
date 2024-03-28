@@ -214,6 +214,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void getToken() {
+        final AuthorizationRequest tokenRequest = getAuthenticationRequest(AuthorizationResponse.Type.TOKEN);
+        AuthorizationClient.openLoginActivity(MainActivity.this, SpotifyInfo.AUTH_TOKEN_REQUEST_CODE, tokenRequest);
+    }
+
+    private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
+        return new AuthorizationRequest.Builder(SpotifyInfo.CLIENT_ID, type, getRedirectUri().toString())
+                .setShowDialog(false)
+                .setScopes(new String[] { "user-read-email", "user-top-read" })
+                .setCampaign("your-campaign-token")
+                .build();
+    }
+
+    private Uri getRedirectUri() {
+        return Uri.parse(SpotifyInfo.REDIRECT_URI);
+    }
+
+
     public void addDatabase() {
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();

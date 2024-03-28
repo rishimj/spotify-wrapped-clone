@@ -58,15 +58,14 @@ public class SpotifyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spotify);
         getToken();
+        //onGetTopItemsClicked();
 
-
-
-        /*
+/*
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_spotify);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-         */
+ */
 
         /*
         binding.fab.setOnClickListener(new View.OnClickListener() {
@@ -79,26 +78,15 @@ public class SpotifyActivity extends AppCompatActivity {
         });
 
          */
-
-        codeTextView = (TextView) findViewById(R.id.code_text_view);
         profileTextView = (TextView) findViewById(R.id.response_text_view);
 
 
-        Button codeBtn = (Button) findViewById(R.id.code_btn);
-        Button profileBtn = (Button) findViewById(R.id.profile_btn);
         Button topItemsBtn = (Button) findViewById(R.id.button_top_items);
 
         topItemsBtn.setOnClickListener((v) -> {
             onGetTopItemsClicked();
         });
 
-        codeBtn.setOnClickListener((v) -> {
-            getCode();
-        });
-
-        profileBtn.setOnClickListener((v) -> {
-            onGetUserProfileClicked();
-        });
     }
 
     public void getToken() {
