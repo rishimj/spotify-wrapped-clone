@@ -3,10 +3,13 @@ package com.example.spotifywrapped;//package com.example.groovyexample;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
+import android.hardware.biometrics.BiometricPrompt;
 import android.os.Bundle;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +18,7 @@ import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,32 +33,46 @@ import okhttp3.Response;
 public class SpotAPIActivity extends AppCompatActivity {
 
     public static final String CLIENT_ID = "4560b5dacac741808ab90c6b7d585003";
-    public static final String REDIRECT_URI = "[spotifywrapped]://[auth]";
+    public static final String REDIRECT_URI = "com.example.spotifywrapped://auth";
 
     public static final int AUTH_TOKEN_REQUEST_CODE = 0;
     public static final int AUTH_CODE_REQUEST_CODE = 1;
+    public static final String SCOPES = "user-read-recently-played,user-library-modify,user-library-read,playlist-modify-public,playlist-modify-private,user-read-email,user-read-private,user-read-birthdate,playlist-read-private,playlist-read-collaborative";
+    private static final int REQUEST_CODE = 1234;
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
     private String mAccessToken, mAccessCode;
     private Call mCall;
 
-    private TextView tokenTextView, codeTextView, profileTextView;
+    private TextView tokenTextView, codeTextView, profileTextView, topTracksTextView;
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        getSupportActionBar().hide();
+
         setContentView(R.layout.spotify_api_info);
 
+//        authenticateSpotify();
         // Initialize the views
         tokenTextView = (TextView) findViewById(R.id.token_text_view);
         codeTextView = (TextView) findViewById(R.id.code_text_view);
         profileTextView = (TextView) findViewById(R.id.response_text_view);
+        topTracksTextView = (TextView) findViewById(R.id.top_tracks_textview);
 
         // Initialize the buttons
         Button tokenBtn = (Button) findViewById(R.id.token_btn);
         Button codeBtn = (Button) findViewById(R.id.code_btn);
         Button profileBtn = (Button) findViewById(R.id.profile_btn);
+
 
         // Set the click listeners for the buttons
 
@@ -69,6 +87,8 @@ public class SpotAPIActivity extends AppCompatActivity {
         profileBtn.setOnClickListener((v) -> {
             onGetUserProfileClicked();
         });
+
+
 
     }
 
@@ -104,8 +124,20 @@ public class SpotAPIActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
 
+//        switch(response.getType()) {
+//            case TOKEN:
+//                SharedPreferences.Editor editor = getSharedPreferences("SPOTIFY", 0).edit();
+//                editor.putString("token", response.getAccessToken());
+//                Log.d("STARTING", "GOT AUTH TOKEN");
+//                editor.apply();
+//                waitForUserInfo();
+//                break;
+//
+//
+//        }
         // Check which request code is present (if any)
         if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
+//            AuthenticationClient
             mAccessToken = response.getAccessToken();
             setTextAsync(mAccessToken, tokenTextView);
 
@@ -113,6 +145,77 @@ public class SpotAPIActivity extends AppCompatActivity {
             mAccessCode = response.getCode();
             setTextAsync(mAccessCode, codeTextView);
         }
+    }
+
+//    private void waitForUserInfo() {
+//
+//        UserService userService = new UserService(queue, msharedPreferences);
+//        userService.get(() -> {
+//            User user = userService.getUser();
+//            SharedPreferences.Editor editor = getSharedPreferences("SPOTIFY", 0).edit();
+//            editor.putString("userid", user.id);
+//            Log.d("STARTING", "GOT USER INFORMATION");
+//            // We use commit instead of apply because we need the information stored immediately
+//            editor.commit();
+//            startMainActivity();
+//        });
+//    }
+
+
+    public void fetchTopTracks() {
+        if (mAccessToken == null) {
+            Toast.makeText(this, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // actually MAKE THE REQEUEST:
+        final Request request = new Request.Builder()
+                .url("https://api.spotify.com/v1/me/top/tracks")
+                .addHeader("Authorization", "Bearer " + mAccessToken)
+                .build();
+
+        cancelCall();
+        mCall = mOkHttpClient.newCall(request);
+
+        mCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("HTTP", "Failed to fetch data: " + e);
+                Toast.makeText(SpotAPIActivity.this, "Failed to fetch data, watch Logcat for more details",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    JSONObject jsonObject = new JSONObject(response.body().string());
+                    JSONArray itemsArray = jsonObject.getJSONArray("items");
+
+                    String[] topTrackNames = new String[5];
+                    String userName = jsonObject.getJSONObject("items").getJSONObject("0").getJSONObject("album").getJSONArray("artists").getJSONObject(0).getString("name");
+
+                    for (int i = 0; i < 5; i++) {
+                        topTrackNames[i] = itemsArray.getJSONObject(i).getJSONObject("album").getString("name");
+                    }
+
+                    Intent intent = new Intent();
+                    intent.putExtra("top_tracks", topTrackNames);
+                    intent.putExtra("user_name", userName);
+                    setResult(RESULT_OK, intent);
+
+                    setTextAsync(jsonObject.toString(3), profileTextView);
+                    finish();
+                } catch (JSONException e) {
+                    Log.d("JSON", "Failed to parse data: " + e);
+                    Toast.makeText(SpotAPIActivity.this, "Failed to parse data, watch Logcat for more details",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+
+
+
     }
 
     /**
@@ -179,6 +282,17 @@ public class SpotAPIActivity extends AppCompatActivity {
                 .setScopes(new String[] { "user-read-email" }) // <--- Change the scope of your requested token here
                 .setCampaign("your-campaign-token")
                 .build();
+    }
+
+    private void startAPIActivity() {
+        Intent newintent = new Intent(SpotAPIActivity.this, MainActivity.class);
+        startActivity(newintent);
+    }
+    private void authenticateSpotify() {
+        AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
+        builder.setScopes(new String[]{SCOPES});
+        AuthorizationRequest request = builder.build();
+        AuthorizationClient.openLoginActivity(this, AUTH_TOKEN_REQUEST_CODE, request);
     }
 
     /**

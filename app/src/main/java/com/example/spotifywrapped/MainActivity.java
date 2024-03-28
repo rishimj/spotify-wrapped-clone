@@ -29,15 +29,22 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.spotifywrapped.SpotAPIActivity.*;
+import com.spotify.sdk.android.auth.AuthorizationClient;
+import com.spotify.sdk.android.auth.AuthorizationRequest;
+import com.spotify.sdk.android.auth.AuthorizationResponse;
+
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    private static final int TOP_TRACKS_REQUEST_CODE = 2;
 
     FirebaseAuth auth;
     Button sign_out_button;
     Button settingsButton;
     Button backgroundModeButton;
+    Button spotifyLoginButton;
     TextView textView;
     FirebaseUser user;
     boolean isNightModeOn;
@@ -54,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
         settingsButton = findViewById(R.id.settings);
         textView = findViewById(R.id.user_details);
         backgroundModeButton = findViewById(R.id.background_mode_button);
+        spotifyLoginButton = findViewById(R.id.spotifyAPI_login);
 
         user = auth.getCurrentUser();
 
@@ -64,6 +72,23 @@ public class MainActivity extends AppCompatActivity {
         } else {
             textView.setText(String.format("Welcome back %s", user.getEmail()));
         }
+
+        spotifyLoginButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+//                String clientID = SpotAPIActivity.CLIENT_ID;
+//                String redirectURI = SpotAPIActivity.REDIRECT_URI;
+//                String scopes = SpotAPIActivity.SCOPES;
+                Intent intent = new Intent(MainActivity.this, SpotAPIActivity.class);
+                startActivity(intent);
+
+//                AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(clientID, AuthorizationResponse.Type.TOKEN, redirectURI);
+//                builder.setScopes(new String[]{scopes});
+//                AuthorizationRequest request = builder.build();
+//                AuthorizationClient.openLoginActivity(MainActivity.this, SpotAPIActivity.AUTH_TOKEN_REQUEST_CODE, request);
+            }
+        });
 
         sign_out_button.setOnClickListener(new View.OnClickListener() {
             @Override

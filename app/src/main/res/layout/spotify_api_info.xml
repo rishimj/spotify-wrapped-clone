@@ -10,7 +10,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_margin="14dp"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/token_text_view"
@@ -44,6 +46,7 @@
             android:id="@+id/response_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10sp"
             android:textSize="10sp"
             tools:text="Line 1\nLine 2\nLine 3" />
 
@@ -60,6 +63,13 @@
                 android:layout_weight="1"
                 android:text="Get User Profile" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/top_tracks_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            tools:text="Track1\nTrack2\nTrack3" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

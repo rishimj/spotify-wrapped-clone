@@ -44,4 +44,12 @@
         android:layout_marginTop="15dp"
         android:text="@string/disable_dark_mode"/>
 
+    <Button
+        android:id="@+id/spotifyAPI_login"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Connect Spotify Account"/>
+
 </LinearLayout>
