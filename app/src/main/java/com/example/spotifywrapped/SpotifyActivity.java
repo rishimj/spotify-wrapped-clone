@@ -51,7 +51,7 @@ public class SpotifyActivity extends AppCompatActivity {
     private String mAccessToken, mAccessCode;
     private Call mCall;
 
-    public User userInfo;
+    //public User userInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
