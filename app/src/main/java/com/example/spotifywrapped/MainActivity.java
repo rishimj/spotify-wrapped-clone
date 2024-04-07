@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
         for (String track : topTracks) {
             sb.append(track).append("\n");
         }
-//        topTracksTextView.setText(userName);
+//        tracks.setText(userName);
     }
 
     private void updateUserNameTextView(String userName) {
