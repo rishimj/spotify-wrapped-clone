@@ -70,6 +70,13 @@
             android:layout_height="wrap_content"
             android:textSize="10sp"
             tools:text="Track1\nTrack2\nTrack3" />
+
+        <Button
+            android:id="@+id/toptracks_button"
+            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fetch Top Tracks" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

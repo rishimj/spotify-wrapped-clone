@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -39,13 +40,15 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
     private static final int TOP_TRACKS_REQUEST_CODE = 2;
+    private SharedViewModel sharedViewModel;
 
     FirebaseAuth auth;
     Button sign_out_button;
     Button settingsButton;
     Button backgroundModeButton;
     Button spotifyLoginButton;
-    TextView textView;
+    TextView welcome_user_text;
+    TextView spotify_login_text;
     FirebaseUser user;
     boolean isNightModeOn;
 
@@ -59,19 +62,30 @@ public class MainActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         sign_out_button = findViewById(R.id.sign_out_button);
         settingsButton = findViewById(R.id.settings);
-        textView = findViewById(R.id.user_details);
+        welcome_user_text = findViewById(R.id.user_details);
         backgroundModeButton = findViewById(R.id.background_mode_button);
         spotifyLoginButton = findViewById(R.id.spotifyAPI_login);
+        spotify_login_text = findViewById(R.id.spotify_user_logged);
 
         user = auth.getCurrentUser();
 
+        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        sharedViewModel.getTopTracks().observe(this, this::updateTopTracksTextView);
+        sharedViewModel.getUserName().observe(this, this::updateUserNameTextView);
+
+
         if (user == null) {
+            //login NOT DONE
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
             finish();
         } else {
-            textView.setText(String.format("Welcome back %s", user.getEmail()));
+            //if user already logged in
+//            retrieveAndUseSpotifyCredentials(user.getUid());
+            welcome_user_text.setText(String.format("Welcome back %s", user.getEmail()));
         }
+
+
 
         spotifyLoginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -83,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, SpotAPIActivity.class);
                 startActivity(intent);
 
+                
 //                AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(clientID, AuthorizationResponse.Type.TOKEN, redirectURI);
 //                builder.setScopes(new String[]{scopes});
 //                AuthorizationRequest request = builder.build();
@@ -109,7 +124,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 Toast.makeText(MainActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
+
                 FirebaseAuth.getInstance().signOut();
+//                logoutFromSpotify();
                 Intent intent  = new Intent(getApplicationContext(), Login.class);
                 startActivity(intent);
                 finish();
@@ -179,6 +196,24 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+
+//    private void retrieveAndUseSpotifyCredentials(String userID) {
+//        credentialsRef =
+//    }
+
+    private void updateTopTracksTextView(String[] topTracks) {
+        StringBuilder sb = new StringBuilder();
+        for (String track : topTracks) {
+            sb.append(track).append("\n");
+        }
+//        topTracksTextView.setText(userName);
+    }
+
+    private void updateUserNameTextView(String userName) {
+        if (userName != null) {
+            spotify_login_text.setText(userName);
+        }
     }
 
     @Override

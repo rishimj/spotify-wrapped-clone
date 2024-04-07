@@ -2,9 +2,6 @@ package com.example.spotifywrapped;//package com.example.groovyexample;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.annotation.SuppressLint;
-import android.content.SharedPreferences;
-import android.hardware.biometrics.BiometricPrompt;
 import android.os.Bundle;
 import android.content.Intent;
 import android.net.Uri;
@@ -37,14 +34,16 @@ public class SpotAPIActivity extends AppCompatActivity {
 
     public static final int AUTH_TOKEN_REQUEST_CODE = 0;
     public static final int AUTH_CODE_REQUEST_CODE = 1;
-    public static final String SCOPES = "user-read-recently-played,user-library-modify,user-library-read,playlist-modify-public,playlist-modify-private,user-read-email,user-read-private,user-read-birthdate,playlist-read-private,playlist-read-collaborative";
+    public static final String SCOPES = "user-read-recently-played, user-library-modify,user-library-read,playlist-modify-public,playlist-modify-private,user-read-email,user-read-private,user-read-birthdate,playlist-read-private,playlist-read-collaborative";
+    public static final String[] SCOPES_ARR = {"user-read-recently-played", "user-library-modify", "user-library-read" , "playlist-modify-public" , "playlist-modify-private" , "user-read-email", "user-read-private","user-read-birthdate","playlist-read-private","playlist-read-collaborative"};
+
     private static final int REQUEST_CODE = 1234;
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
     private String mAccessToken, mAccessCode;
     private Call mCall;
 
-    private TextView tokenTextView, codeTextView, profileTextView, topTracksTextView;
+    private TextView tokenTextView, codeTextView, profileTextView, tracksTextView;
 
     @Override
     protected void onStart() {
@@ -66,14 +65,17 @@ public class SpotAPIActivity extends AppCompatActivity {
         tokenTextView = (TextView) findViewById(R.id.token_text_view);
         codeTextView = (TextView) findViewById(R.id.code_text_view);
         profileTextView = (TextView) findViewById(R.id.response_text_view);
-        topTracksTextView = (TextView) findViewById(R.id.top_tracks_textview);
+        tracksTextView = (TextView) findViewById(R.id.top_tracks_textview);
 
         // Initialize the buttons
         Button tokenBtn = (Button) findViewById(R.id.token_btn);
         Button codeBtn = (Button) findViewById(R.id.code_btn);
         Button profileBtn = (Button) findViewById(R.id.profile_btn);
+        Button tracksBtn = (Button) findViewById(R.id.toptracks_button);
 
-
+//        AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI)
+//                .setShowDialog(true)
+//                .setScopes(SCOPES_ARR).build();
         // Set the click listeners for the buttons
 
         tokenBtn.setOnClickListener((v) -> {
@@ -87,6 +89,11 @@ public class SpotAPIActivity extends AppCompatActivity {
         profileBtn.setOnClickListener((v) -> {
             onGetUserProfileClicked();
         });
+
+        tracksBtn.setOnClickListener((v) -> {
+            onGetTopTracksClicked();
+        });
+
 
 
 
@@ -113,6 +120,8 @@ public class SpotAPIActivity extends AppCompatActivity {
         final AuthorizationRequest request = getAuthenticationRequest(AuthorizationResponse.Type.CODE);
         AuthorizationClient.openLoginActivity(SpotAPIActivity.this, AUTH_CODE_REQUEST_CODE, request);
     }
+
+
 
 
     /**
@@ -162,7 +171,7 @@ public class SpotAPIActivity extends AppCompatActivity {
 //    }
 
 
-    public void fetchTopTracks() {
+    public void onGetTopTracksClicked() {
         if (mAccessToken == null) {
             Toast.makeText(this, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
             return;
@@ -203,11 +212,12 @@ public class SpotAPIActivity extends AppCompatActivity {
                     intent.putExtra("user_name", userName);
                     setResult(RESULT_OK, intent);
 
-                    setTextAsync(jsonObject.toString(3), profileTextView);
+//                    setTextAsync(jsonObject.toString(3), tracksTextView);
+                    setTextAsync("bruh", tracksTextView);
                     finish();
                 } catch (JSONException e) {
                     Log.d("JSON", "Failed to parse data: " + e);
-                    Toast.makeText(SpotAPIActivity.this, "Failed to parse data, watch Logcat for more details",
+                    Toast.makeText(SpotAPIActivity.this, "Fmailed to parse data, watch Logcat for more details",
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -250,6 +260,7 @@ public class SpotAPIActivity extends AppCompatActivity {
                 try {
                     final JSONObject jsonObject = new JSONObject(response.body().string());
                     setTextAsync(jsonObject.toString(3), profileTextView);
+//                    setTextAsync(jsonObject.toString(3), text);
                 } catch (JSONException e) {
                     Log.d("JSON", "Failed to parse data: " + e);
                     Toast.makeText(SpotAPIActivity.this, "Failed to parse data, watch Logcat for more details",
@@ -293,6 +304,10 @@ public class SpotAPIActivity extends AppCompatActivity {
         builder.setScopes(new String[]{SCOPES});
         AuthorizationRequest request = builder.build();
         AuthorizationClient.openLoginActivity(this, AUTH_TOKEN_REQUEST_CODE, request);
+    }
+
+    public void logOutSpotify() {
+
     }
 
     /**
