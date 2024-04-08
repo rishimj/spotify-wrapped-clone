@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import com.example.spotifywrapped.databinding.ActivityMainBinding;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.view.WindowCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -45,7 +48,10 @@ public class SpotifyActivity extends AppCompatActivity {
     private ActivitySpotifyBinding binding;
 
     TextView tokenTextView, codeTextView, profileTextView;
+
+    TextView songText, albumText, popText, artistText, song2, song3, song4, song5, song6, song7, song8, song9, song10;
     String userId;
+
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
     private String mAccessToken, mAccessCode;
@@ -57,15 +63,28 @@ public class SpotifyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_spotify);
-        getToken();
-        //onGetTopItemsClicked();
 
-/*
+        binding = ActivitySpotifyBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        /*
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_spotify);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
- */
+         */
+
+
+        getToken();
+
+
+        /*
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_spotify);
+        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+         */
+
 
         /*
         binding.fab.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +97,20 @@ public class SpotifyActivity extends AppCompatActivity {
         });
 
          */
-        profileTextView = (TextView) findViewById(R.id.response_text_view);
+        songText = (TextView) findViewById(R.id.topName);
+        artistText = (TextView) findViewById(R.id.topArtist);
+        popText = (TextView) findViewById(R.id.topPopularity);
+        albumText = (TextView) findViewById(R.id.topAlbum);
+        song2 = (TextView) findViewById(R.id.song2);
+        song3 = (TextView) findViewById(R.id.song3);
+        song4 = (TextView) findViewById(R.id.song4);
+        song5 = (TextView) findViewById(R.id.song5);
+        song6 = (TextView) findViewById(R.id.song6);
+        song7 = (TextView) findViewById(R.id.song7);
+        song8 = (TextView) findViewById(R.id.song8);
+        song9 = (TextView) findViewById(R.id.song9);
+        song10 = (TextView) findViewById(R.id.song10);
+
 
 
         Button topItemsBtn = (Button) findViewById(R.id.button_top_items);
@@ -148,8 +180,6 @@ public class SpotifyActivity extends AppCompatActivity {
                     userId = userInfo.getId();
 
                      */
-                    Log.d("arr[0]", arr[0]);
-                    Log.d("arr[1]", arr[1]);
                     setTextAsync(arr[1], profileTextView);
                 } catch (JSONException e) {
                     Log.d("JSON", "Failed to parse data: " + e);
@@ -185,36 +215,43 @@ public class SpotifyActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     final JSONObject jsonObject = new JSONObject(response.body().string());
-                    //Object url = jsonObject.get("items");
-                    String results = "";
+
+
                     JSONArray array = jsonObject.getJSONArray("items");
-                    for (int i = 0; i < array.length(); i++) {
+                    TextView[] songs = {song2, song3, song4, song5, song6, song7, song8, song9, song10};
+                    for (int i = 1; i < 10; i++) {
+                        if (i >= array.length()) {
+                            break;
+                        }
                         JSONObject obj = (JSONObject) array.get(i);
-                        JSONObject album = (JSONObject) obj.get("album");
-                        String albumName = album.getString("name");
+
                         String name = obj.getString("name");
-                        String popularity = obj.getString("popularity");
-                        String message = "Your #" + (i + 1) + " track is " + name + " on the album " + albumName + ". It has " + popularity + "/100 popularity.\n";
-                        results += message;
+                        JSONArray artists = obj.getJSONArray("artists");
+                        JSONObject topArtist = (JSONObject) artists.get(0);
+                        String artist = topArtist.getString("name");
+                        String message = name + " by " + artist;
+                        setTextAsync(message, songs[i - 1]);
                     }
-                    //JSONObject top1 = (JSONObject) array.get(0);
-                    //String href = top1.getString("name");
 
-                    //String[] arr = new String[array.length()];
-                    //for (int i = 0; i < array.length(); i++) {
-                     //   arr[i] = array.getString(i);
-                    //}
-                    /*
+                    JSONObject top = (JSONObject) array.get(0);
+                    JSONObject album = (JSONObject) top.get("album");
+                    JSONArray artists = top.getJSONArray("artists");
+                    JSONObject topArtist = (JSONObject) artists.get(0);
 
 
-                     */
-                    //Log.d("arr[0]", arr[0]);
-                   // Log.d("arr[1]", arr[1]);
-                    setTextAsync(results, profileTextView);
+                    String name = top.getString("name");
+                    String popularity = "Popularity: " + top.getString("popularity") + "/100";
+                    String albumName = "Album: " + album.getString("name");
+                    String artist = "by " + topArtist.getString("name");
+
+                    setTextAsync(name, songText);
+                    setTextAsync(popularity, popText);
+                    setTextAsync(artist, artistText);
+                    setTextAsync(albumName, albumText);
+
+
                 } catch (JSONException e) {
                     Log.d("JSON", "Failed to parse data: " + e);
-                    Toast.makeText(SpotifyActivity.this, "Failed to parse data, watch Logcat for more details",
-                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -227,7 +264,7 @@ public class SpotifyActivity extends AppCompatActivity {
     private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(SpotifyInfo.CLIENT_ID, type, getRedirectUri().toString())
                 .setShowDialog(false)
-                .setScopes(new String[] { "user-read-email", "user-top-read" })
+                .setScopes(new String[] { "user-read-email", "user-top-read", "user-library-modify" })
                 .setCampaign("your-campaign-token")
                 .build();
     }
@@ -247,6 +284,7 @@ public class SpotifyActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+
     /*
     @Override
     public boolean onSupportNavigateUp() {
@@ -256,4 +294,8 @@ public class SpotifyActivity extends AppCompatActivity {
     }
 
      */
+
+
+
+
 }

@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        /*
+
         if (user == null) {
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
             textView.setText(String.format("Welcome back %s", user.getEmail()));
         }
 
-         */
+
 
         sign_out_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // addDatabase();
+        addDatabase();
 
 
     //ADD action bar
@@ -212,19 +212,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    }
-
-    public void getToken() {
-        final AuthorizationRequest tokenRequest = getAuthenticationRequest(AuthorizationResponse.Type.TOKEN);
-        AuthorizationClient.openLoginActivity(MainActivity.this, SpotifyInfo.AUTH_TOKEN_REQUEST_CODE, tokenRequest);
-    }
-
-    private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
-        return new AuthorizationRequest.Builder(SpotifyInfo.CLIENT_ID, type, getRedirectUri().toString())
-                .setShowDialog(false)
-                .setScopes(new String[] { "user-read-email", "user-top-read" })
-                .setCampaign("your-campaign-token")
-                .build();
     }
 
     private Uri getRedirectUri() {

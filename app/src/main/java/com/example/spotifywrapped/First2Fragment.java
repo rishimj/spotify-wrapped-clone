@@ -2,22 +2,41 @@ package com.example.spotifywrapped;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.spotifywrapped.databinding.FragmentFirst2Binding;
+import com.google.gson.Gson;
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class First2Fragment extends Fragment {
 
     private FragmentFirst2Binding binding;
+
+    TextView topSong;
+    TextView topArtistName;
+    TextView topSongPopularity;
+    String topData;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        topData =  getArguments().getString("topItemsString");
+    }
 
     @Override
     public View onCreateView(
@@ -33,13 +52,37 @@ public class First2Fragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                NavHostFragment.findNavController(First2Fragment.this)
-                        .navigate(R.id.action_First2Fragment_to_Second2Fragment);
+        /*
+        try {
+            Gson gson = new Gson();
+            JSONObject jsonObject = gson.fromJson(topData, JSONObject.class);
+            String results = "";
+            JSONArray array = jsonObject.getJSONArray("items");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = (JSONObject) array.get(i);
+                JSONObject album = (JSONObject) obj.get("album");
+                String albumName = album.getString("name");
+                String name = obj.getString("name");
+                String popularity = obj.getString("popularity");
+                String message = "Your #" + (i + 1) + " track is " + name + " on the album " + albumName + ". It has " + popularity + "/100 popularity.\n";
+                results += message;
             }
-        });
+            JSONObject obj = (JSONObject) array.get(0);
+            JSONObject album = (JSONObject) obj.get("album");
+            topSong.setText(obj.getString("name"));
+            topArtistName.setText(album.getString("name"));
+            topSongPopularity.setText(obj.getString("popularity"));
+
+
+        } catch (JSONException e) {
+            Log.d("JSON", "Failed to parse data: " + e);
+            Toast.makeText(getContext(), "Failed to parse data, watch Logcat for more details",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+         */
+
+
     }
 
     public void getToken() {
