@@ -94,8 +94,9 @@ public class MainActivity extends AppCompatActivity {
 //                String clientID = SpotAPIActivity.CLIENT_ID;
 //                String redirectURI = SpotAPIActivity.REDIRECT_URI;
 //                String scopes = SpotAPIActivity.SCOPES;
-                Intent intent = new Intent(MainActivity.this, SpotAPIActivity.class);
+                Intent intent = new Intent(getApplicationContext(), SpotAPIActivity.class);
                 startActivity(intent);
+//                finish();
 
                 
 //                AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(clientID, AuthorizationResponse.Type.TOKEN, redirectURI);

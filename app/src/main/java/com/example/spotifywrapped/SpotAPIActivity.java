@@ -34,8 +34,8 @@ public class SpotAPIActivity extends AppCompatActivity {
 
     public static final int AUTH_TOKEN_REQUEST_CODE = 0;
     public static final int AUTH_CODE_REQUEST_CODE = 1;
-    public static final String SCOPES = "user-read-recently-played, user-library-modify,user-library-read,playlist-modify-public,playlist-modify-private,user-read-email,user-read-private,user-read-birthdate,playlist-read-private,playlist-read-collaborative";
-    public static final String[] SCOPES_ARR = {"user-read-recently-played", "user-library-modify", "user-library-read" , "playlist-modify-public" , "playlist-modify-private" , "user-read-email", "user-read-private","user-read-birthdate","playlist-read-private","playlist-read-collaborative"};
+    public static final String SCOPES = "user-top-read, user-read-recently-played, user-library-modify,user-library-read,playlist-modify-public,playlist-modify-private,user-read-email,user-read-private,user-read-birthdate,playlist-read-private,playlist-read-collaborative";
+    public static final String[] SCOPES_ARR = {"user-top-read, user-read-recently-played", "user-library-modify", "user-library-read" , "playlist-modify-public" , "playlist-modify-private" , "user-read-email", "user-read-private","user-read-birthdate","playlist-read-private","playlist-read-collaborative"};
 
     private static final int REQUEST_CODE = 1234;
 
@@ -203,22 +203,32 @@ public class SpotAPIActivity extends AppCompatActivity {
                     String[] topTrackNames = new String[5];
                     String userName = jsonObject.getJSONObject("items").getJSONObject("0").getJSONObject("album").getJSONArray("artists").getJSONObject(0).getString("name");
 
+                    String message = "";
                     for (int i = 0; i < 5; i++) {
-                        topTrackNames[i] = itemsArray.getJSONObject(i).getJSONObject("album").getString("name");
+                        JSONObject obj = (JSONObject) itemsArray.get(i);
+
+                        String name = obj.getString("name");
+                        JSONArray artistsArr = obj.getJSONArray("artists");
+                        JSONObject topArtist = (JSONObject) artistsArr.get(0);
+                        String artist = topArtist.getString("name");
+                        message += name + " by " + artist + "\n";
+//                        topTrackNames[i] = itemsArray.getJSONObject(i).getJSONObject("album").getString("name");
                     }
 
-                    Intent intent = new Intent();
-                    intent.putExtra("top_tracks", topTrackNames);
-                    intent.putExtra("user_name", userName);
-                    setResult(RESULT_OK, intent);
+//                    Intent intent = new Intent();
+//                    intent.putExtra("top_tracks", topTrackNames);
+//                    intent.putExtra("user_name", userName);
+//                    setResult(RESULT_OK, intent);
 
 //                    setTextAsync(jsonObject.toString(3), tracksTextView);
-                    setTextAsync("bruh", tracksTextView);
-                    finish();
+//                    setTextAsync("piss", tracksTextView);
+
+                    setTextAsync(message, tracksTextView);
+//                    finish();
                 } catch (JSONException e) {
                     Log.d("JSON", "Failed to parse data: " + e);
-                    Toast.makeText(SpotAPIActivity.this, "Fmailed to parse data, watch Logcat for more details",
-                            Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(SpotAPIActivity.this, "Failed to parse data, watch Logcat for more details",
+//                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -259,8 +269,8 @@ public class SpotAPIActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     final JSONObject jsonObject = new JSONObject(response.body().string());
-                    setTextAsync(jsonObject.toString(3), profileTextView);
-//                    setTextAsync(jsonObject.toString(3), text);
+                    setTextAsync("Welcome, " + jsonObject.getString("display_name") + "!", profileTextView);
+//                    setTextAsync("headass", profileTextView);
                 } catch (JSONException e) {
                     Log.d("JSON", "Failed to parse data: " + e);
                     Toast.makeText(SpotAPIActivity.this, "Failed to parse data, watch Logcat for more details",
@@ -289,8 +299,8 @@ public class SpotAPIActivity extends AppCompatActivity {
      */
     private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(CLIENT_ID, type, getRedirectUri().toString())
-                .setShowDialog(false)
-                .setScopes(new String[] { "user-read-email" }) // <--- Change the scope of your requested token here
+                .setShowDialog(true)
+                .setScopes(new String[] { "user-read-email", "user-top-read", "user-library-modify" }) // <--- Change the scope of your requested token here
                 .setCampaign("your-campaign-token")
                 .build();
     }
