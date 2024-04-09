@@ -49,7 +49,7 @@ public class SpotifyActivity extends AppCompatActivity {
 
     TextView tokenTextView, codeTextView, profileTextView;
 
-    TextView songText, albumText, popText, artistText, song2, song3, song4, song5, song6, song7, song8, song9, song10;
+    TextView songText, albumText, artistText, song2, song3, song4, song5, song6, song7, song8, song9, song10;
     String userId;
 
 
@@ -99,7 +99,6 @@ public class SpotifyActivity extends AppCompatActivity {
          */
         songText = (TextView) findViewById(R.id.topName);
         artistText = (TextView) findViewById(R.id.topArtist);
-        popText = (TextView) findViewById(R.id.topPopularity);
         albumText = (TextView) findViewById(R.id.topAlbum);
         song2 = (TextView) findViewById(R.id.song2);
         song3 = (TextView) findViewById(R.id.song3);
@@ -240,12 +239,10 @@ public class SpotifyActivity extends AppCompatActivity {
 
 
                     String name = top.getString("name");
-                    String popularity = "Popularity: " + top.getString("popularity") + "/100";
                     String albumName = "Album: " + album.getString("name");
                     String artist = "by " + topArtist.getString("name");
 
                     setTextAsync(name, songText);
-                    setTextAsync(popularity, popText);
                     setTextAsync(artist, artistText);
                     setTextAsync(albumName, albumText);
 
@@ -264,7 +261,7 @@ public class SpotifyActivity extends AppCompatActivity {
     private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(SpotifyInfo.CLIENT_ID, type, getRedirectUri().toString())
                 .setShowDialog(false)
-                .setScopes(new String[] { "user-read-email", "user-top-read", "user-library-modify" })
+                .setScopes(new String[] { "user-read-email", "user-top-read", "user-follow-read" })
                 .setCampaign("your-campaign-token")
                 .build();
     }
