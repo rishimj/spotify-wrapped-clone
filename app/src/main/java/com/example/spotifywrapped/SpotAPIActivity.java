@@ -40,7 +40,7 @@ public class SpotAPIActivity extends AppCompatActivity {
     private static final int REQUEST_CODE = 1234;
 
     private final OkHttpClient mOkHttpClient = new OkHttpClient();
-    private String mAccessToken, mAccessCode;
+    public static String mAccessToken, mAccessCode;
     private Call mCall;
 
     private TextView tokenTextView, codeTextView, profileTextView, tracksTextView;

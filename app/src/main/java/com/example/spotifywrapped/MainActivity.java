@@ -83,6 +83,13 @@ public class MainActivity extends AppCompatActivity {
             //if user already logged in
 //            retrieveAndUseSpotifyCredentials(user.getUid());
             welcome_user_text.setText(String.format("Welcome back %s", user.getEmail()));
+
+            if (SpotAPIActivity.mAccessCode == null) {
+                spotify_login_text.setText("Not logged in yet!");
+            } else {
+                spotify_login_text.setText("Access code: " + SpotAPIActivity.mAccessCode.toString());
+            }
+//            spotify_login_text.setText(SpotAPIActivity.mAccessCode.toString());
         }
 
 
@@ -97,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), SpotAPIActivity.class);
                 startActivity(intent);
 //                finish();
+//                spotify_login_text.setText("Access code: " + SpotAPIActivity.mAccessCode.toString());
 
-                
 //                AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(clientID, AuthorizationResponse.Type.TOKEN, redirectURI);
 //                builder.setScopes(new String[]{scopes});
 //                AuthorizationRequest request = builder.build();
