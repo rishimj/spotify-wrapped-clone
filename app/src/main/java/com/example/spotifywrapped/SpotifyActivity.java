@@ -113,7 +113,6 @@ public class SpotifyActivity extends AppCompatActivity {
 
 
         Button topItemsBtn = (Button) findViewById(R.id.button_top_items);
-
         topItemsBtn.setOnClickListener((v) -> {
             onGetTopItemsClicked();
         });
@@ -260,7 +259,7 @@ public class SpotifyActivity extends AppCompatActivity {
 
     private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(SpotifyInfo.CLIENT_ID, type, getRedirectUri().toString())
-                .setShowDialog(false)
+                .setShowDialog(true)
                 .setScopes(new String[] { "user-read-email", "user-top-read", "user-follow-read" })
                 .setCampaign("your-campaign-token")
                 .build();
