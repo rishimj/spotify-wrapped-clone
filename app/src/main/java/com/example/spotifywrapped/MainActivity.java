@@ -20,6 +20,8 @@ import com.example.spotifywrapped.databinding.ActivityMainBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -27,10 +29,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
-import com.spotify.sdk.android.auth.AuthorizationClient;
-import com.spotify.sdk.android.auth.AuthorizationRequest;
-import com.spotify.sdk.android.auth.AuthorizationResponse;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,17 +36,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.HashMap;
 
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -59,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     Button sign_out_button;
     Button settingsButton;
     Button backgroundModeButton;
+    Button deleteAccountButton;
     TextView textView;
     TextView tokenTextView, codeTextView, profileTextView;
     FirebaseUser user;
@@ -87,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         settingsButton = (Button) findViewById(R.id.settings);
         textView = (TextView) findViewById(R.id.user_details);
         backgroundModeButton = (Button) findViewById(R.id.background_mode_button);
-
+        deleteAccountButton = (Button) findViewById(R.id.delete_account_button);
 
         user = auth.getCurrentUser();
 
@@ -183,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        checkDeleteAccountButton();
+
         addDatabase();
 
 
@@ -214,6 +208,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void checkDeleteAccountButton() {
+        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                user.delete()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d("User Account Delete", "User account deleted.");
+                                }
+                            }
+                        });
+                Intent intent  = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
     private Uri getRedirectUri() {
         return Uri.parse(SpotifyInfo.REDIRECT_URI);
     }
@@ -221,8 +235,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void addDatabase() {
         // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
+        FirebaseDatabase database = FirebaseDatabase.getInstance("ttps://spotify-wrapped-21aab-default-rtdb.firebaseio.com/");
+        DatabaseReference myRef = database.getReference();
         //myRef.setValue("Hello, World!");
 
         HashMap<String, Object> map = new HashMap<>();
