@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +36,9 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import java.util.Calendar;
+
+// Get current date
 
 import java.util.Objects;
 
@@ -80,6 +84,27 @@ public class Login extends AppCompatActivity {
 
         //DEFAULT MODE IS DARK
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+        Calendar calendar = Calendar.getInstance();
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        int drawId = 0;
+        ImageView backgroundImageView = findViewById(R.id.backgroundImageView);
+        if (month == 1 && day == 11) {
+            drawId = R.drawable.valentines_background;
+        } else if (month == 9 && (day > 24 && day < 31)) {
+            drawId = R.drawable.halloween_background;
+        } else if (month == 11 && (day > 24 && day < 31)) {
+            drawId = R.drawable.newyears_background;
+        } else if (month == 10 && (day > 26 && day < 29)) {
+            drawId = R.drawable.thanksgiving_background;
+        } else if (month == 11 && (day > 20 && day < 27)) {
+            drawId = R.drawable.christmas_background;
+        } else {
+            drawId = R.drawable.default_background;
+        }
+        backgroundImageView.setImageResource(drawId);
+
 
 
         textView.setOnClickListener(new View.OnClickListener() {
