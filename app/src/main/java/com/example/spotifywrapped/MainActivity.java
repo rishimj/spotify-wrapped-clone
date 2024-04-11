@@ -51,6 +51,10 @@ public class MainActivity extends AppCompatActivity {
     Button settingsButton;
     Button backgroundModeButton;
     Button deleteAccountButton;
+
+    Button resetPasswordButton;
+
+    Button readDataButton;
     TextView textView;
     TextView tokenTextView, codeTextView, profileTextView;
     FirebaseUser user;
@@ -80,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
         textView = (TextView) findViewById(R.id.user_details);
         backgroundModeButton = (Button) findViewById(R.id.background_mode_button);
         deleteAccountButton = (Button) findViewById(R.id.delete_account_button);
+        resetPasswordButton = (Button) findViewById(R.id.reset_password_button);
+        readDataButton = (Button) findViewById(R.id.get_database_data_button);
 
         user = auth.getCurrentUser();
 
@@ -177,10 +183,30 @@ public class MainActivity extends AppCompatActivity {
 
         checkDeleteAccountButton();
 
-        addDatabase();
+        checkResetPasswordButton();
+
+        createDatabase();
+
+        readDataButton();
 
 
-    //ADD action bar
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        addUser("rishimj", 1);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        //getUserPref("rishimj2");
+        //addDatabase();
+
+
+
+        //ADD action bar
 
 
         //setSupportActionBar(binding.toolbar);
@@ -208,6 +234,34 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void checkResetPasswordButton() {
+
+        String emailAddress = user.getEmail();
+
+        assert emailAddress != null;
+        auth.sendPasswordResetEmail(emailAddress)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("Password Reset", "Email sent.");
+                            Toast.makeText(MainActivity.this, "Email sent to reset password", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    public void readDataButton() {
+
+        readDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getUserPref("rishimj");
+            }
+        });
+
+    }
+
     public void checkDeleteAccountButton() {
         deleteAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,6 +272,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     Log.d("User Account Delete", "User account deleted.");
+
                                 }
                             }
                         });
@@ -232,10 +287,11 @@ public class MainActivity extends AppCompatActivity {
         return Uri.parse(SpotifyInfo.REDIRECT_URI);
     }
 
-
+    FirebaseDatabase database;
+    DatabaseReference databaseReference;
     public void addDatabase() {
         // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance("ttps://spotify-wrapped-21aab-default-rtdb.firebaseio.com/");
+        database = FirebaseDatabase.getInstance("ttps://spotify-wrapped-21aab-default-rtdb.firebaseio.com/");
         DatabaseReference myRef = database.getReference();
         //myRef.setValue("Hello, World!");
 
@@ -262,6 +318,65 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+    DataSnapshot userData;
+    public void createDatabase() {
+        database = FirebaseDatabase.getInstance("ttps://spotify-wrapped-21aab-default-rtdb.firebaseio.com/");
+        databaseReference = database.getReference();
+
+        databaseReference.child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userData = dataSnapshot;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // do nothing
+            }
+        });
+    }
+
+    public void addUser(String username, int pref) {
+        DatabaseReference userRef = databaseReference.child("users").child(username);
+        userRef.setValue(username);
+        userRef.child("pref").setValue(pref);
+
+        databaseReference.child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userData = dataSnapshot;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // do nothing
+            }
+        });
+
+
+    }
+
+
+
+    public void getUserPref(String username) {
+        /*
+        databaseReference.child("users").child(username).child("pref").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userData = dataSnapshot;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // do nothing
+            }
+        });*/
+
+
+        int pref = userData.child(username).child("pref").getValue(Integer.class);
+        Toast.makeText(MainActivity.this, String.format("User Preference %d", pref), Toast.LENGTH_SHORT).show();
+
     }
 
     @Override

@@ -56,4 +56,18 @@
         android:layout_height="wrap_content"
         android:text="Delete Account" />
 
+    <Button
+        android:id="@+id/reset_password_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reset Password" />
+
+    <Button
+        android:id="@+id/get_database_data_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Get Data" />
+
+
+
 </LinearLayout>
