@@ -7,7 +7,11 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.app.NotificationCompat;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -106,6 +110,25 @@ public class Login extends AppCompatActivity {
         backgroundImageView.setImageResource(drawId);
 
 
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        String a = null;
+        if (month == 1 && day == 14) {
+            a = "Valentines theme";
+        } else if (month == 9 && day == 31) {
+            a = "Halloween theme";
+        } else if (month == 11 && day == 31) {
+            a = "New Years theme";
+        } else if (month == 10 && day == 29) {
+            a = "Thanksgiving theme";
+        } else if (month == 11 && day == 25) {
+            a = "Christmas theme";
+        }
+
+        if (a != null) {
+            addHolidayNotification(a);
+        }
+
 
         textView.setOnClickListener(new View.OnClickListener() {
 
@@ -184,7 +207,6 @@ public class Login extends AppCompatActivity {
         });
 
 
-
     }
 
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -218,4 +240,21 @@ public class Login extends AppCompatActivity {
             }
         }
     });
+
+    private void addHolidayNotification(String a) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setContentTitle("New Spotify Wrapped Theme!")
+                .setContentText("Limited time " + a + "available now !");
+
+
+        Intent notification = new Intent(this, MainActivity.class);
+        PendingIntent content = PendingIntent.getActivity(this, 0, notification, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(content);
+
+
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
+    }
+
 }
