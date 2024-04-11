@@ -24,7 +24,11 @@
     <string name="already_have_an_account">Already have an account? <font color='#1DB954'>Sign In</font></string>
     <string name="have_an_account_click_to_sign_in">Have an account? Click to Sign in!</string>
     <string name="sign_out">Sign Out</string>
+    <string name="welcomeToMain">Manage Your Wrapped:</string>
     <string name="client_id">1042135853480-0fnffi6bkir0l8ojbjas4mhq8hvokl2u.apps.googleusercontent.com</string>
+    <string name="queryTextGemini">Given the below lists of the user\'s top artists and top songs, provide a roughly 2-3 sentence analysis about the user\'s music taste.
+    Mention some of the user\'s favorite artists, but then ALSO suggest similar artists that were not mentioned on this list, and maybe some songs that matched the vibe of the top songs the user had.  Write a response as if you were casually
+    talking to the user. Do not use the words "I" or "me" in your response. If there are multiple of the same item, only mention them once.\n</string>
     <string name="or">OR</string>
     <string name="title_activity_settings">SettingsActivity</string>
 

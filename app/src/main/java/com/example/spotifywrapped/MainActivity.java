@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         welcome_user_text = findViewById(R.id.user_details);
         backgroundModeButton = findViewById(R.id.background_mode_button);
         spotifyLoginButton = findViewById(R.id.spotifyAPI_login);
-        spotify_login_text = findViewById(R.id.spotify_user_logged);
+//        spotify_login_text = findViewById(R.id.spotify_user_logged);
         deleteAccountButton = (Button) findViewById(R.id.delete_account_button);
         resetPasswordButton = (Button) findViewById(R.id.reset_password_button);
 
@@ -96,9 +96,11 @@ public class MainActivity extends AppCompatActivity {
             welcome_user_text.setText(String.format("Welcome back %s", user.getEmail()));
 
             if (SpotAPIActivity.mAccessCode == null) {
-                spotify_login_text.setText("Not logged in yet!");
+                Log.d("HTTP", "NOT LOGGED IN YET!!!!");
+//                spotify_login_text.setText("Not logged in yet!");
             } else {
-                spotify_login_text.setText("Access code: " + SpotAPIActivity.mAccessCode.toString());
+                Log.d("HTTP", "ACCESS CODE FOUND: "  + SpotAPIActivity.mAccessCode.toString());
+//                spotify_login_text.setText("Access code: " + SpotAPIActivity.mAccessCode.toString());
             }
 //            spotify_login_text.setText(SpotAPIActivity.mAccessCode.toString());
         }
