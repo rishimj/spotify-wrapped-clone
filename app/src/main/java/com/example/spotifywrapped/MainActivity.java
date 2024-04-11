@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -19,7 +20,9 @@ import com.example.spotifywrapped.databinding.ActivityMainBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
     Button spotifyLoginButton;
     TextView welcome_user_text;
     TextView spotify_login_text;
+
+    Button deleteAccountButton;
+
+    Button resetPasswordButton;
     FirebaseUser user;
     boolean isNightModeOn;
 
@@ -66,6 +73,8 @@ public class MainActivity extends AppCompatActivity {
         backgroundModeButton = findViewById(R.id.background_mode_button);
         spotifyLoginButton = findViewById(R.id.spotifyAPI_login);
         spotify_login_text = findViewById(R.id.spotify_user_logged);
+        deleteAccountButton = (Button) findViewById(R.id.delete_account_button);
+        resetPasswordButton = (Button) findViewById(R.id.reset_password_button);
 
         user = auth.getCurrentUser();
 
@@ -73,7 +82,9 @@ public class MainActivity extends AppCompatActivity {
         sharedViewModel.getTopTracks().observe(this, this::updateTopTracksTextView);
         sharedViewModel.getUserName().observe(this, this::updateUserNameTextView);
 
+        checkDeleteAccountButton();
 
+        checkResetPasswordButton();
         if (user == null) {
             //login NOT DONE
             Intent intent = new Intent(getApplicationContext(), Login.class);
@@ -178,6 +189,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
     //ADD action bar
 
 
@@ -205,6 +218,46 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    public void checkResetPasswordButton() {
+
+        String emailAddress = user.getEmail();
+
+        assert emailAddress != null;
+        auth.sendPasswordResetEmail(emailAddress)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("Password Reset", "Email sent.");
+                            Toast.makeText(MainActivity.this, "Email sent to reset password", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    public void checkDeleteAccountButton() {
+        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                user.delete()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d("User Account Delete", "User account deleted.");
+
+                                }
+                            }
+                        });
+                Intent intent  = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+    }
+
+
 
 //    private void retrieveAndUseSpotifyCredentials(String userID) {
 //        credentialsRef =

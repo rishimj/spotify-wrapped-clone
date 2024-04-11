@@ -59,4 +59,19 @@
         android:layout_marginTop="10dp"
         android:text="@string/spotify_user_text" />
 
+    <Button
+        android:id="@+id/delete_account_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Delete Account" />
+
+    <Button
+        android:id="@+id/reset_password_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="Reset Password" />
+
+
 </LinearLayout>
