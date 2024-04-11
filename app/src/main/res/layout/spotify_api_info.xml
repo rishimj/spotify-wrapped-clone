@@ -46,8 +46,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_margin="8dp"
                 android:layout_weight="1"
-                android:fontFamily="sans-serif-condensed"
-                android:text="GENERATE WRAPPED"
+                android:fontFamily="@font/circular_medium"
+                android:text="Generate Wrapped"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10sp"
             android:layout_marginBottom="20sp"
-            android:fontFamily="serif"
+            android:fontFamily="@font/circular_std_black"
             android:textAlignment="center"
             android:textSize="25sp"
             tools:text="" />
@@ -83,10 +83,11 @@
                 android:layout_height="40dp"
                 android:layout_marginHorizontal="3dp"
                 android:backgroundTint="#434343"
-                android:fontFamily="sans-serif-condensed"
+                android:fontFamily="@font/circular_book"
                 android:text="4 Weeks"
                 android:textAllCaps="true"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/toptracks_button_mediumterm"
@@ -94,10 +95,11 @@
                 android:layout_height="40dp"
                 android:layout_marginHorizontal="3dp"
                 android:backgroundTint="#434343"
-                android:fontFamily="sans-serif-condensed"
+                android:fontFamily="@font/circular_book"
                 android:text="Half Year"
                 android:textAllCaps="true"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/toptracks_button_longterm"
@@ -105,10 +107,11 @@
                 android:layout_height="40dp"
                 android:layout_marginHorizontal="3dp"
                 android:backgroundTint="#434343"
-                android:fontFamily="sans-serif-condensed"
+                android:fontFamily="@font/circular_book"
                 android:text="1 Year"
                 android:textAllCaps="true"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
 
         </LinearLayout>
@@ -132,7 +135,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="50dp"
-            android:fontFamily="sans-serif-condensed-light"
+            android:fontFamily="@font/circular_book"
+            android:text="       "
             android:textSize="25sp" />
 
 
@@ -151,7 +155,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
-                android:fontFamily="serif"
+                android:fontFamily="@font/circular_std_black"
                 android:textSize="35sp"
                 android:textStyle="bold" />
 
@@ -160,7 +164,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="10dp"
-                android:fontFamily="sans-serif-condensed-light"
+                android:fontFamily="@font/circular_std_font"
                 android:textSize="25sp" />
 
         </LinearLayout>

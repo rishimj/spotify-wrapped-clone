@@ -6,6 +6,11 @@
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string-array name="notification_options">
+        <item>High Priority</item>
+        <item>Low Priority</item>
+        <item>Silent</item>
+    </string-array>
     <string name="redirectSchemeName">spotifywrapped</string>
     <string name="redirectHostName">auth</string>
     <string name="redirect_uri">spotifywrapped://auth</string>

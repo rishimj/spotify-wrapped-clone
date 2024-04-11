@@ -139,18 +139,18 @@ public class SpotAPIActivity extends AppCompatActivity {
         profileBtn.setOnClickListener((v) -> {
             onGetUserProfileClicked();
             try {
-                Thread.sleep(250);
+                Thread.sleep(300);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
             shortTermTracksBtn.setVisibility(View.VISIBLE);
             midTermTracksBtn.setVisibility(View.VISIBLE);
             longTermTracksBtn.setVisibility(View.VISIBLE);
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                Thread.sleep(1050);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
             onGetTopTracksClicked("medium_term");
 
             try {
