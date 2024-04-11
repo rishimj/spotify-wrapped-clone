@@ -8,4 +8,6 @@
     </style>
 
     <style name="Theme.SpotifyWrapped" parent="Base.Theme.SpotifyWrapped" />
+    <style name ="TextColor"><item name="android:textColor">@color/lavender</item></style>
+    <style name ="TitleColor"><item name="subtitleTextColor">@color/lye</item></style>
 </resources>

@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/pink"
     tools:context=".SpotifyActivity">
 
 
@@ -26,8 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="20dp"
-        android:text="View your Wrapped!"
-        android:background="@drawable/round_background_purple" />
+        android:text="View your Wrapped!" />
 
     <TextView
         android:id="@+id/number_one_song"

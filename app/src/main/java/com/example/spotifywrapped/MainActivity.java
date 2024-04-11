@@ -38,6 +38,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
     Button sign_out_button;
+    Button viewSongsButton;
     Button settingsButton;
     Button backgroundModeButton;
     TextView textView;
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
          */
 
+        viewSongsButton = (Button) findViewById(R.id.top_songs);
         auth = FirebaseAuth.getInstance();
         sign_out_button = (Button) findViewById(R.id.sign_out_button);
         settingsButton = (Button) findViewById(R.id.settings);
@@ -92,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
         user = auth.getCurrentUser();
 
         Button loginButton = (Button) findViewById(R.id.button_to_spotify);
+
+        getToken();
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,6 +151,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        
+
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,15 +191,25 @@ public class MainActivity extends AppCompatActivity {
         });
 
         addDatabase();
+        
+        viewSongsButton.setOnClickListener(new View.OnClickListener() {
+                                               @Override
+                                               public void onClick(View v) {
+                                                   onGetTrack();
+                                                   Log.d("msg", "got tracks");
+                                                   Intent intent = new Intent(MainActivity.this, TopSongs.class);
+                                                   startActivity(intent);
+                                               }
+                                           });
 
 
-    //ADD action bar
+                //ADD action bar
 
 
-        //setSupportActionBar(binding.toolbar);
+                //setSupportActionBar(binding.toolbar);
 
-        //Intent googleIntent = new Intent(MainActivity.this, GoogleSignInActivity.class);
-        //MainActivity.this.startActivity(googleIntent);
+                //Intent googleIntent = new Intent(MainActivity.this, GoogleSignInActivity.class);
+                //MainActivity.this.startActivity(googleIntent);
 
 
 
@@ -210,14 +227,31 @@ public class MainActivity extends AppCompatActivity {
         });*/
 
 
-
-
     }
 
     private Uri getRedirectUri() {
         return Uri.parse(SpotifyInfo.REDIRECT_URI);
     }
 
+    public void getToken() {
+        final AuthorizationRequest tokenRequest = getAuthenticationRequest(AuthorizationResponse.Type.TOKEN);
+        AuthorizationClient.openLoginActivity(MainActivity.this, SpotifyInfo.AUTH_TOKEN_REQUEST_CODE, tokenRequest);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
+
+        // Check which request code is present (if any)
+        if (SpotifyInfo.AUTH_TOKEN_REQUEST_CODE == requestCode) {
+            mAccessToken = response.getAccessToken();
+            //setTextAsync(mAccessToken, tokenTextView);
+
+        } else if (SpotifyInfo.AUTH_CODE_REQUEST_CODE == requestCode) {
+            mAccessCode = response.getCode();
+            //setTextAsync(mAccessCode, codeTextView);
+        }
+    }
 
     public void addDatabase() {
         // Write a message to the database
@@ -250,6 +284,90 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void onGetTrack() {
+        if (mAccessToken == null) {
+            Toast.makeText(this, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create a request to get the user profile
+        final Request request = new Request.Builder()
+                .url("https://api.spotify.com/v1/me/top/tracks?time_range=short_term&offset=0")
+                .addHeader("Authorization", "Bearer " + mAccessToken)
+                .build();
+
+        cancelCall();
+        mCall = mOkHttpClient.newCall(request);
+
+        mCall.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("HTTP", "Failed to fetch data: " + e);
+                Toast.makeText(MainActivity.this, "Failed to fetch data, watch Logcat for more details",
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                try {
+                    //Log.d("response", response.body().string());
+                    final JSONObject jsonObject = new JSONObject(response.body().string());
+                    JSONArray items = jsonObject.getJSONArray("items");
+
+                    for (int i = 0; i < items.length(); i++) {
+                        JSONObject songTrack = items.getJSONObject(i);
+                        //song name
+                        String name = songTrack.getString("name");
+                        Integer duration = songTrack.getInt("duration_ms");
+                        // song duration
+                        duration = duration / 1000 % 60;
+                        JSONArray artistInfo = songTrack.getJSONArray("artists");
+                        JSONObject artist = artistInfo.getJSONObject(0);
+                        // song artist first on list
+                        String artistName = artist.getString("name");
+
+                        JSONObject album = songTrack.getJSONObject("album");
+                        JSONArray imageArray = album.getJSONArray("images");
+                        JSONObject image = imageArray.getJSONObject(0);
+                        // song image_url = "https://..."
+                        String image_url = image.getString("url");
+                        // song preview_url (can be null)
+                        String preview_url = songTrack.getString("preview_url");;
+//                        setTextAsync(preview_url, profileTextView);
+//                    if (songTrack.getString("preview_url") != null) {
+//                        preview_url = songTrack.getString("preview_url");
+//                    }
+                        TopSongs.songList.add(new Song(name, duration, artistName, image_url, preview_url));
+
+                    }
+
+                    Integer i = TopSongs.songList.size();
+                    //setTextAsync(i.toString(), profileTextView);
+
+                } catch (JSONException e) {
+                    Log.d("JSON", "Failed to parse data: " + e);
+                    //Toast.makeText(MainActivity.this, "Failed to parse data, watch Logcat for more details",
+                           // Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void cancelCall() {
+        if (mCall != null) {
+            mCall.cancel();
+        }
+    }
+
+    protected void onDestroy() {
+        cancelCall();
+        super.onDestroy();
+    }
+
+    private void setTextAsync(final String text, TextView textView) {
+        runOnUiThread(() -> textView.setText(text));
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -277,5 +395,13 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
+        return new AuthorizationRequest.Builder(SpotifyInfo.CLIENT_ID, type, getRedirectUri().toString())
+                .setShowDialog(false)
+                .setScopes(new String[] { "user-read-email", "user-top-read", "user-follow-modify" })
+                .setCampaign("your-campaign-token")
+                .build();
     }
 }
