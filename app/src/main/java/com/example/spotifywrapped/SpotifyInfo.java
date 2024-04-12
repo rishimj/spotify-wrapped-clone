@@ -26,6 +26,6 @@ public class SpotifyInfo {
     public static int AUTH_TOKEN_REQUEST_CODE = 0;
     public static final int AUTH_CODE_REQUEST_CODE = 1;
     public static String REDIRECT_URI = "com.example.spotifywrapped://auth";
-    public static String SCOPES = "user-top-read, user-read-recently-played, user-library-modify,user-library-read,playlist-modify-public,playlist-modify-private,user-read-email,user-read-private,user-read-birthdate,playlist-read-private,playlist-read-collaborative";
+    public static String[] SCOPES = {"user-top-read", "user-read-recently-played", "user-library-modify","user-library-read","playlist-modify-public","playlist-modify-private","user-read-email","user-read-private","user-read-birthdate","playlist-read-private","playlist-read-collaborative"};
 
 }

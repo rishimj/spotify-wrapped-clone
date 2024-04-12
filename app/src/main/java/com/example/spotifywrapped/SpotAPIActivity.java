@@ -17,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 import com.spotify.sdk.android.auth.AuthorizationClient;
 import com.spotify.sdk.android.auth.AuthorizationRequest;
 import com.spotify.sdk.android.auth.AuthorizationResponse;
@@ -43,7 +44,7 @@ public class SpotAPIActivity extends AppCompatActivity {
 
     public static final int AUTH_TOKEN_REQUEST_CODE = SpotifyInfo.AUTH_TOKEN_REQUEST_CODE;
     public static final int AUTH_CODE_REQUEST_CODE = SpotifyInfo.AUTH_CODE_REQUEST_CODE;
-    public static final String SCOPES = SpotifyInfo.SCOPES;
+    public static final String[] SCOPES = SpotifyInfo.SCOPES;
 //    public static final String[] SCOPES_ARR = {"user-top-read, user-read-recently-played", "user-library-modify", "user-library-read" , "playlist-modify-public" , "playlist-modify-private" , "user-read-email", "user-read-private","user-read-birthdate","playlist-read-private","playlist-read-collaborative"};
 
     private static final int REQUEST_CODE = 1234;
@@ -72,16 +73,11 @@ public class SpotAPIActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        getSupportActionBar().hide();
+
 
         setContentView(R.layout.spotify_api_info);
 
-//        authenticateSpotify();
-        // Initialize the views
-//        tokenTextView = (TextView) findViewById(R.id.token_text_view);
-//        codeTextView = (TextView) findViewById(R.id.code_text_view);
         profileTextView = (TextView) findViewById(R.id.response_text_view);
 //        tracksTextView = (TextView) findViewById(R.id.top_tracks_textview);
 
@@ -275,9 +271,7 @@ public class SpotAPIActivity extends AppCompatActivity {
         AuthorizationClient.openLoginActivity(SpotAPIActivity.this, AUTH_CODE_REQUEST_CODE, request);
     }
 
-    public void setThreeTimeButtonsEnabled() {
 
-    }
 
 
 
@@ -291,12 +285,10 @@ public class SpotAPIActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         final AuthorizationResponse response = AuthorizationClient.getResponse(resultCode, data);
         // Check which request code is present (if any)
-        if (AUTH_TOKEN_REQUEST_CODE == requestCode) {
-//            AuthenticationClient
+        if (SpotifyInfo.AUTH_TOKEN_REQUEST_CODE == requestCode) {
             mAccessToken = response.getAccessToken();
-//            setTextAsync(mAccessToken, tokenTextView);
 
-        } else if (AUTH_CODE_REQUEST_CODE == requestCode) {
+        } else if (SpotifyInfo.AUTH_CODE_REQUEST_CODE == requestCode) {
             mAccessCode = response.getCode();
             setTextAsync(mAccessCode, codeTextView);
         }
@@ -393,6 +385,7 @@ public class SpotAPIActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     try {
+//                        assert response.body() != null;
                         final JSONObject jsonObject = new JSONObject(response.body().string());
 
                         JSONArray array = jsonObject.getJSONArray("items");
@@ -623,7 +616,8 @@ public class SpotAPIActivity extends AppCompatActivity {
     private AuthorizationRequest getAuthenticationRequest(AuthorizationResponse.Type type) {
         return new AuthorizationRequest.Builder(CLIENT_ID, type, getRedirectUri().toString())
                 .setShowDialog(true)
-                .setScopes(new String[] { "user-read-email", "user-top-read", "user-library-modify" }) // <--- Change the scope of your requested token here
+                .setScopes(new String[] { "user-read-email", "user-top-read", "user-library-modify", "user-follow-read" }) // <--- Change the scope of your requested token here
+//                .setScopes(SpotifyInfo.SCOPES)
                 .setCampaign("your-campaign-token")
                 .build();
     }
@@ -632,12 +626,12 @@ public class SpotAPIActivity extends AppCompatActivity {
         Intent newintent = new Intent(SpotAPIActivity.this, MainActivity.class);
         startActivity(newintent);
     }
-    private void authenticateSpotify() {
-        AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
-        builder.setScopes(new String[]{SCOPES});
-        AuthorizationRequest request = builder.build();
-        AuthorizationClient.openLoginActivity(this, AUTH_TOKEN_REQUEST_CODE, request);
-    }
+//    private void authenticateSpotify() {
+//        AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(CLIENT_ID, AuthorizationResponse.Type.TOKEN, REDIRECT_URI);
+//        builder.setScopes(new String[]{SCOPES});
+//        AuthorizationRequest request = builder.build();
+//        AuthorizationClient.openLoginActivity(this, AUTH_TOKEN_REQUEST_CODE, request);
+//    }
 
     public void logOutSpotify() {
 

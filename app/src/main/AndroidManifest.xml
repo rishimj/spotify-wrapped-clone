@@ -54,7 +54,14 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.SpotifyWrapped"></activity>
+            android:theme="@style/Theme.SpotifyWrapped">
+            <intent-filter>
+                <data
+                    android:host="auth"
+                    android:scheme="com.example.spotifywrapped" />
+            </intent-filter>
+        </activity>
+
 
 
         <activity
