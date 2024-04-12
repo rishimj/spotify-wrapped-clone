@@ -367,74 +367,78 @@ public class SpotAPIActivity extends AppCompatActivity {
     }
 
     public void onGetTopTracksClicked(String timePeriod) {
-        if (mAccessToken == null) {
-            Toast.makeText(this, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // actually MAKE THE REQEUEST:
-        final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me/top/tracks?time_range=" + timePeriod)
-                .addHeader("Authorization", "Bearer " + mAccessToken)
-                .build();
-
-        cancelCall();
-        mCall = mOkHttpClient.newCall(request);
-
-        mCall.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("HTTP", "Failed to fetch data: " + e);
-//                Toast.makeText(SpotAPIActivity.this, "Failed to fetch data, watch Logcat for more details",
-//                        Toast.LENGTH_SHORT).show();
+        runOnUiThread(() -> {
+            if (mAccessToken == null) {
+                Toast.makeText(this, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
+                return;
             }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    final JSONObject jsonObject = new JSONObject(response.body().string());
+            // actually MAKE THE REQEUEST:
+            final Request request = new Request.Builder()
+                    .url("https://api.spotify.com/v1/me/top/tracks?time_range=" + timePeriod)
+                    .addHeader("Authorization", "Bearer " + mAccessToken)
+                    .build();
 
-                    JSONArray array = jsonObject.getJSONArray("items");
-                    TextView[] songs = {song2, song3, song4, song5};
-                    TextView[] placeNums = {place2, place3, place4, place5};
-                    for (int i = 1; i < 5; i++) {
-                        if (i >= array.length()) {
-                            break;
+            cancelCall();
+            mCall = mOkHttpClient.newCall(request);
+
+            mCall.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("HTTP", "Failed to fetch data: " + e);
+//                Toast.makeText(SpotAPIActivity.this, "Failed to fetch data, watch Logcat for more details",
+//                        Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    try {
+                        final JSONObject jsonObject = new JSONObject(response.body().string());
+
+                        JSONArray array = jsonObject.getJSONArray("items");
+                        TextView[] songs = {song2, song3, song4, song5};
+                        TextView[] placeNums = {place2, place3, place4, place5};
+                        for (int i = 1; i < 5; i++) {
+                            if (i >= array.length()) {
+                                break;
+                            }
+                            JSONObject obj = (JSONObject) array.get(i);
+
+                            String name = obj.getString("name");
+                            JSONArray artists = obj.getJSONArray("artists");
+                            JSONObject topArtist = (JSONObject) artists.get(0);
+                            String artist = topArtist.getString("name");
+                            String message = name + " by " + artist;
+                            setTextAsync(message, songs[i - 1]);
+                            setTextAsync("#" + (i+1), placeNums[i - 1]);
                         }
-                        JSONObject obj = (JSONObject) array.get(i);
 
-                        String name = obj.getString("name");
-                        JSONArray artists = obj.getJSONArray("artists");
+                        JSONObject top = (JSONObject) array.get(0);
+                        JSONArray artists = top.getJSONArray("artists");
                         JSONObject topArtist = (JSONObject) artists.get(0);
-                        String artist = topArtist.getString("name");
-                        String message = name + " by " + artist;
-                        setTextAsync(message, songs[i - 1]);
-                        setTextAsync("#" + (i+1), placeNums[i - 1]);
-                    }
-
-                    JSONObject top = (JSONObject) array.get(0);
-                    JSONArray artists = top.getJSONArray("artists");
-                    JSONObject topArtist = (JSONObject) artists.get(0);
 
 
-                    String name = top.getString("name");
-                    String artist = "by " + topArtist.getString("name");
+                        String name = top.getString("name");
+                        String artist = "by " + topArtist.getString("name");
 
-                    setTextAsync(name, songText);
-                    setTextAsync(artist, artistText);
-                    setTextAsync("Your top song is: ", topSongTextDescriptor);
+                        setTextAsync(name, songText);
+                        setTextAsync(artist, artistText);
+                        setTextAsync("Your top song is: ", topSongTextDescriptor);
 //                    setTextAsync(jsonObject.toString(3), tracksTextView);
 //                    setTextAsync("piss", tracksTextView);
 
 //                    setTextAsync(message, tracksTextView);
 //                    finish();
-                } catch (JSONException e) {
-                    Log.d("JSON", "Failed to parse data: " + e);
+                    } catch (JSONException e) {
+                        Log.d("JSON", "Failed to parse data: " + e);
 //                    Toast.makeText(SpotAPIActivity.this, "Failed to parse data, watch Logcat for more details",
 //                            Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
+            });
+
         });
+
 
 
 
@@ -442,96 +446,96 @@ public class SpotAPIActivity extends AppCompatActivity {
     }
 
     public void onGetTopArtistsClicked(String timePeriod, int numItems) {
-        if (mAccessToken == null) {
-            Toast.makeText(this, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        runOnUiThread(() -> {
+            if (mAccessToken == null) {
+                Toast.makeText(this, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        // actually MAKE THE REQEUEST:
-        final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me/top/artists?time_range=" + timePeriod)
-                .addHeader("Authorization", "Bearer " + mAccessToken)
-                .build();
+            // actually MAKE THE REQEUEST:
+            final Request request = new Request.Builder()
+                    .url("https://api.spotify.com/v1/me/top/artists?time_range=" + timePeriod)
+                    .addHeader("Authorization", "Bearer " + mAccessToken)
+                    .build();
 
-        cancelCall();
-        mCall = mOkHttpClient.newCall(request);
+            cancelCall();
+            mCall = mOkHttpClient.newCall(request);
 
-        mCall.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("HTTP", "Failed to fetch data: " + e);
+            mCall.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("HTTP", "Failed to fetch data: " + e);
 //                Toast.makeText(SpotAPIActivity.this, "Failed to fetch data, watch Logcat for more details",
 //                        Toast.LENGTH_SHORT).show();
-            }
+                }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    final JSONObject jsonObject = new JSONObject(response.body().string());
-                    ArrayList<String> topArtistsTempArray = new ArrayList<>();
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    try {
+                        final JSONObject jsonObject = new JSONObject(response.body().string());
+                        ArrayList<String> topArtistsTempArray = new ArrayList<>();
 
 
-                    JSONArray array = jsonObject.getJSONArray("items");
-                    TextView[] artistsArr = {artist2, artist3, artist4, artist5};
-                    TextView[] placeNums = {aPlace2, aPlace3, aPlace4, aPlace5};
-                    for (int i = 1; i < numItems; i++) {
-                        if (i >= array.length()) {
-                            break;
+                        JSONArray array = jsonObject.getJSONArray("items");
+                        TextView[] artistsArr = {artist2, artist3, artist4, artist5};
+                        TextView[] placeNums = {aPlace2, aPlace3, aPlace4, aPlace5};
+                        for (int i = 1; i < numItems; i++) {
+                            if (i >= array.length()) {
+                                break;
+                            }
+                            JSONObject obj = (JSONObject) array.get(i);
+                            String artist = obj.getString("name");
+
+                            //temporarily populate a topArtists arrayList to form the array for later
+                            topArtistsTempArray.add(artist);
+
+                            setTextAsync(artist, artistsArr[i - 1]);
+                            setTextAsync("#" + (i+1), placeNums[i - 1]);
                         }
-                        JSONObject obj = (JSONObject) array.get(i);
-                        String artist = obj.getString("name");
 
-                        //temporarily populate a topArtists arrayList to form the array for later
-                        topArtistsTempArray.add(artist);
+                        JSONObject top = (JSONObject) array.get(0);
+                        int numFollowers = top.getJSONObject("followers").getInt("total");
+                        JSONArray associatedGenres = top.getJSONArray("genres");
+                        JSONArray imageObjectArray = top.getJSONArray("images");
+                        JSONObject firstImgObject = imageObjectArray.getJSONObject(0);
+                        String primaryArtistURL = firstImgObject.getString("url");
 
-                        setTextAsync(artist, artistsArr[i - 1]);
-                        setTextAsync("#" + (i+1), placeNums[i - 1]);
-                    }
-
-                    JSONObject top = (JSONObject) array.get(0);
-                    int numFollowers = top.getJSONObject("followers").getInt("total");
-                    JSONArray associatedGenres = top.getJSONArray("genres");
-                    JSONArray imageObjectArray = top.getJSONArray("images");
-                    JSONObject firstImgObject = imageObjectArray.getJSONObject(0);
-                    String primaryArtistURL = firstImgObject.getString("url");
-
-                    String submessage = associatedGenres.getString(0);
-                    if (associatedGenres.length() > 1) {
-                        for (int i = 1; i < associatedGenres.length(); i++) {
-                            if (i == associatedGenres.length() - 1) {
-                                submessage += " and " + associatedGenres.getString(i) + ". ";
-                            } else {
-                                submessage += ", " + associatedGenres.getString(i);
+                        String submessage = associatedGenres.getString(0);
+                        if (associatedGenres.length() > 1) {
+                            for (int i = 1; i < associatedGenres.length(); i++) {
+                                if (i == associatedGenres.length() - 1) {
+                                    submessage += " and " + associatedGenres.getString(i) + ". ";
+                                } else {
+                                    submessage += ", " + associatedGenres.getString(i);
+                                }
                             }
                         }
-                    }
 
-                    String[] randomRec = {"You must really like ", "Your favorite genres seem to be ", "This artist is commonly associated with ", "Fans seem to enjoy "};
-                    int stringPicker =  (int) (Math.random() * randomRec.length);
+                        String[] randomRec = {"You must really like ", "Your favorite genres seem to be ", "This artist is commonly associated with ", "Fans seem to enjoy "};
+                        int stringPicker =  (int) (Math.random() * randomRec.length);
 
 
-                    String message = randomRec[stringPicker] + submessage + "You're one of " + top.getString("name") + "'s " + numFollowers + " monthly listeners!";
+                        String message = randomRec[stringPicker] + submessage + "You're one of " + top.getString("name") + "'s " + numFollowers + " monthly listeners!";
 //                    String message = top.getJSONArray("genres").getString(0);
-                    setTextAsync(top.getString("name"), mostListenedArtist);
-                    topArtistsTempArray.add(top.getString("name"));
+                        setTextAsync(top.getString("name"), mostListenedArtist);
+                        topArtistsTempArray.add(top.getString("name"));
 //                    artistStringList.set(0, top.getString("name"));
 //                    artistStringList.add(top.getString("name"));
-                    setTextAsync("Your number one artist was: ", topArtistTextDescriptor);
-                    setTextAsync(message, asscGenres);
-                    setImageAsync(primaryArtistURL, (ImageView) findViewById(R.id.topArtistPic));
-                    artistStringList = topArtistsTempArray;
+                        setTextAsync("Your number one artist was: ", topArtistTextDescriptor);
+                        setTextAsync(message, asscGenres);
+                        setImageAsync(primaryArtistURL, (ImageView) findViewById(R.id.topArtistPic));
+                        artistStringList = topArtistsTempArray;
 //                    setTextAsync(jsonObject.toString(3), tracksTextView);
 
-                } catch (JSONException e) {
-                    Log.d("JSON", "Failed to parse data: " + e);
+                    } catch (JSONException e) {
+                        Log.d("JSON", "Failed to parse data: " + e);
 //                    Toast.makeText(SpotAPIActivity.this, "Failed to parse data, watch Logcat for more details",
 //                            Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
+            });
+
         });
-
-
-
 
     }
 
@@ -540,43 +544,50 @@ public class SpotAPIActivity extends AppCompatActivity {
      * This method will get the user profile using the token
      */
     public void onGetUserProfileClicked() {
-        if (mAccessToken == null) {
-            Toast.makeText(this, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        runOnUiThread(() ->
+            {
+                if (mAccessToken == null) {
+                    Toast.makeText(this, "You need to get an access token first!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-        // Create a request to get the user profile
-        final Request request = new Request.Builder()
-                .url("https://api.spotify.com/v1/me")
-                .addHeader("Authorization", "Bearer " + mAccessToken)
-                .build();
+                // Create a request to get the user profile
+                final Request request = new Request.Builder()
+                        .url("https://api.spotify.com/v1/me")
+                        .addHeader("Authorization", "Bearer " + mAccessToken)
+                        .build();
 
-        cancelCall();
-        mCall = mOkHttpClient.newCall(request);
+                cancelCall();
+                mCall = mOkHttpClient.newCall(request);
 
-        mCall.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("HTTP", "Failed to fetch data: " + e);
+                mCall.enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Log.d("HTTP", "Failed to fetch data: " + e);
 //                Toast.makeText(SpotAPIActivity.this, "Failed to fetch data, watch Logcat for more details",
 //                        Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        try {
+                            final JSONObject jsonObject = new JSONObject(response.body().string());
+//                    profileTextView.setText(jsonObject.getString("display_name") + "'s Spotify Wrapped");
+                            setTextAsync(jsonObject.getString("display_name") + "'s Spotify Wrapped", profileTextView);
+                            spotifyUsername = jsonObject.getString("display_name");
+//                    setTextAsync("Your top song is: ", topSongTextDescriptor);
+                        } catch (JSONException e) {
+//                            Log.d("JSON", "Failed to parse data: " + e);
+//                            Toast.makeText(SpotAPIActivity.this, "Failed to parse data, watch Logcat for more details",
+//                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-                    final JSONObject jsonObject = new JSONObject(response.body().string());
-//                    profileTextView.setText(jsonObject.getString("display_name") + "'s Spotify Wrapped");
-                    setTextAsync(jsonObject.getString("display_name") + "'s Spotify Wrapped", profileTextView);
-                    spotifyUsername = jsonObject.getString("display_name");
-//                    setTextAsync("Your top song is: ", topSongTextDescriptor);
-                } catch (JSONException e) {
-                    Log.d("JSON", "Failed to parse data: " + e);
-                    Toast.makeText(SpotAPIActivity.this, "Failed to parse data, watch Logcat for more details",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        );
+
+
     }
 
     /**
