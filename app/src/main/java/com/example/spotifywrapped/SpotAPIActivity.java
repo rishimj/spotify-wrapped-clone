@@ -93,6 +93,10 @@ public class SpotAPIActivity extends AppCompatActivity {
         Button midTermTracksBtn = (Button) findViewById(R.id.toptracks_button_mediumterm);
         Button longTermTracksBtn = (Button) findViewById(R.id.toptracks_button_longterm);
 
+        Button shortTermArtistsBtn = (Button) findViewById(R.id.topArtists_button_shortterm);
+        Button midTermArtistsBtn = (Button) findViewById(R.id.topArtists_button_mediumterm);
+        Button longTermArtistsBtn = (Button) findViewById(R.id.topArtists_button_longterm);
+
         shortTermTracksBtn.setVisibility(View.GONE);
         midTermTracksBtn.setVisibility(View.GONE);
         longTermTracksBtn.setVisibility(View.GONE);
@@ -131,13 +135,14 @@ public class SpotAPIActivity extends AppCompatActivity {
 
         //OPEN SPOTIFY API LOGIN FOR USER!!!!
         getToken();
+//        wait(200);
 
 
 
 
         generateWrappedBtn.setOnClickListener((v) -> {
             onGetUserProfileClicked();
-            wait(400);
+            wait(550);
             onGetTopTracksClicked("medium_term");
             wait(550);
             onGetTrack("medium_term");
@@ -152,35 +157,49 @@ public class SpotAPIActivity extends AppCompatActivity {
         });
 
         shortTermTracksBtn.setOnClickListener((v) -> {
+            wait(100);
             onGetTopTracksClicked("short_term");
             wait(500);
             onGetTrack("short_term");
-            wait(500);
+            wait(100);
+        });
+
+        shortTermArtistsBtn.setOnClickListener((v) -> {
             onGetTopArtistsClicked("short_term",5);
-            wait(300);
+            wait(100);
             setGeminiInsightsTextfield();
         });
 
-
         midTermTracksBtn.setOnClickListener((v) -> {
+            wait(100);
             onGetTopTracksClicked("medium_term");
             wait(500);
             onGetTrack("medium_term");
-            wait(500);
+            wait(100);
+        });
+
+        midTermArtistsBtn.setOnClickListener((v) -> {
             onGetTopArtistsClicked("medium_term",5);
-            wait(300);
+            wait(100);
             setGeminiInsightsTextfield();
         });
 
         longTermTracksBtn.setOnClickListener((v) -> {
+            wait(100);
             onGetTopTracksClicked("long_term");
             wait(500);
             onGetTrack("long_term");
-            wait(500);
+            wait(100);
+        });
+
+        longTermArtistsBtn.setOnClickListener((v) -> {
             onGetTopArtistsClicked("long_term",5);
-            wait(300);
+            wait(500);
             setGeminiInsightsTextfield();
         });
+
+
+
 
 
 
@@ -302,8 +321,8 @@ public class SpotAPIActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
 //                Log.d("HTTP", "Failed to fetch data: " + e);
-                Toast.makeText(SpotAPIActivity.this, "Failed to fetch data, watch Logcat for more details",
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SpotAPIActivity.this, "Failed to fetch data, watch Logcat for more details",
+//                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -312,6 +331,7 @@ public class SpotAPIActivity extends AppCompatActivity {
                     //Log.d("response", response.body().string());
                     final JSONObject jsonObject = new JSONObject(response.body().string());
                     JSONArray items = jsonObject.getJSONArray("items");
+                    songClipsList.clear();
 
                     for (int i = 0; i < items.length(); i++) {
                         JSONObject songTrack = items.getJSONObject(i);
@@ -448,7 +468,7 @@ public class SpotAPIActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 try {
                     final JSONObject jsonObject = new JSONObject(response.body().string());
-                    ArrayList<String> topArtists = new ArrayList<>();
+                    ArrayList<String> topArtistsTempArray = new ArrayList<>();
 
 
                     JSONArray array = jsonObject.getJSONArray("items");
@@ -459,15 +479,11 @@ public class SpotAPIActivity extends AppCompatActivity {
                             break;
                         }
                         JSONObject obj = (JSONObject) array.get(i);
-
-//                        String name = obj.getString("name");
-//                        JSONArray artists = obj.getJSONArray("artists");
-//                        JSONObject topArtist = (JSONObject) artists.get(0);
                         String artist = obj.getString("name");
-//                        String message = name + " by " + artist;
-                        topArtists.add(artist);
-//                        artistStringList.set(i, artist);
-//                        artistStringList.add(artist);
+
+                        //temporarily populate a topArtists arrayList to form the array for later
+                        topArtistsTempArray.add(artist);
+
                         setTextAsync(artist, artistsArr[i - 1]);
                         setTextAsync("#" + (i+1), placeNums[i - 1]);
                     }
@@ -497,13 +513,13 @@ public class SpotAPIActivity extends AppCompatActivity {
                     String message = randomRec[stringPicker] + submessage + "You're one of " + top.getString("name") + "'s " + numFollowers + " monthly listeners!";
 //                    String message = top.getJSONArray("genres").getString(0);
                     setTextAsync(top.getString("name"), mostListenedArtist);
-                    topArtists.add(top.getString("name"));
+                    topArtistsTempArray.add(top.getString("name"));
 //                    artistStringList.set(0, top.getString("name"));
 //                    artistStringList.add(top.getString("name"));
                     setTextAsync("Your number one artist was: ", topArtistTextDescriptor);
                     setTextAsync(message, asscGenres);
                     setImageAsync(primaryArtistURL, (ImageView) findViewById(R.id.topArtistPic));
-                    artistStringList = topArtists;
+                    artistStringList = topArtistsTempArray;
 //                    setTextAsync(jsonObject.toString(3), tracksTextView);
 
                 } catch (JSONException e) {

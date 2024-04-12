@@ -18,6 +18,7 @@
         android:text="@string/sign_out"
         android:textSize="20sp"
         android:fontFamily="@font/circular_book"
+        android:layout_marginTop="30dp"
         android:layout_marginBottom="15dp" />
 
     <TextView
@@ -80,13 +81,13 @@
 
 
     <Button
-        android:id="@+id/delete_account_button"
+        android:id="@+id/get_database_data_button"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
         android:fontFamily="@font/circular_book"
-        android:text="Delete Account" />
+        android:text="Get Data" />
 
     <Button
         android:id="@+id/reset_password_button"
@@ -96,6 +97,16 @@
         android:layout_marginTop="15dp"
         android:fontFamily="@font/circular_book"
         android:text="Reset Password" />
+
+    <Button
+        android:id="@+id/delete_account_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="#9E4848"
+        android:fontFamily="@font/circular_book"
+        android:text="Delete Account" />
 
 
 </LinearLayout>

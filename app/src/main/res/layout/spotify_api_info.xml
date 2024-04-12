@@ -319,12 +319,58 @@
                 android:layout_marginTop="10dp" />
 
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/topArtists_button_shortterm"
+                    android:layout_width="115dp"
+                    android:layout_height="40dp"
+                    android:layout_marginHorizontal="3dp"
+                    android:backgroundTint="#434343"
+                    android:fontFamily="@font/circular_book"
+                    android:text="4 Weeks"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/topArtists_button_mediumterm"
+                    android:layout_width="115dp"
+                    android:layout_height="40dp"
+                    android:layout_marginHorizontal="3dp"
+                    android:backgroundTint="#434343"
+                    android:fontFamily="@font/circular_book"
+                    android:text="Half Year"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/topArtists_button_longterm"
+                    android:layout_width="115dp"
+                    android:layout_height="40dp"
+                    android:layout_marginHorizontal="3dp"
+                    android:backgroundTint="#434343"
+                    android:fontFamily="@font/circular_book"
+                    android:text="1 Year"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="12sp" />
+
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/number_one_artist_descriptor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="20dp"
                 android:fontFamily="@font/circular_std_black"
                 android:text="        "
                 android:textSize="25sp" />
