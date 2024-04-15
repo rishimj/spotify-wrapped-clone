@@ -1,7 +1,6 @@
 package com.example.spotifywrapped;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -20,17 +20,18 @@ import com.example.spotifywrapped.databinding.ActivityMainBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.gson.Gson;
-import com.spotify.sdk.android.auth.AuthorizationClient;
-import com.spotify.sdk.android.auth.AuthorizationRequest;
-import com.spotify.sdk.android.auth.AuthorizationResponse;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,87 +39,89 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.spotifywrapped.SpotAPIActivity.*;
+import com.spotify.sdk.android.auth.AuthorizationClient;
+import com.spotify.sdk.android.auth.AuthorizationRequest;
+import com.spotify.sdk.android.auth.AuthorizationResponse;
 
-import java.io.IOException;
 import java.util.HashMap;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    private static final int TOP_TRACKS_REQUEST_CODE = 2;
+    private SharedViewModel sharedViewModel;
 
     FirebaseAuth auth;
     Button sign_out_button;
     Button settingsButton;
     Button backgroundModeButton;
-    TextView textView;
-    TextView tokenTextView, codeTextView, profileTextView;
+    Button spotifyLoginButton;
+    TextView welcome_user_text;
+    TextView spotify_login_text;
+
+    Button deleteAccountButton;
+
+    Button resetPasswordButton;
+    Button readDataButton;
     FirebaseUser user;
     boolean isNightModeOn;
-    String userId;
-
-    private final OkHttpClient mOkHttpClient = new OkHttpClient();
-    private String mAccessToken, mAccessCode;
-    private Call mCall;
-
-    public User userInfo;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        /*
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-         */
-
         auth = FirebaseAuth.getInstance();
-        sign_out_button = (Button) findViewById(R.id.sign_out_button);
-        settingsButton = (Button) findViewById(R.id.settings);
-        textView = (TextView) findViewById(R.id.user_details);
-        backgroundModeButton = (Button) findViewById(R.id.background_mode_button);
-
+        sign_out_button = findViewById(R.id.sign_out_button);
+        settingsButton = findViewById(R.id.settings);
+        welcome_user_text = findViewById(R.id.user_details);
+        backgroundModeButton = findViewById(R.id.background_mode_button);
+        spotifyLoginButton = findViewById(R.id.spotifyAPI_login);
+//        spotify_login_text = findViewById(R.id.spotify_user_logged);
+        deleteAccountButton = findViewById(R.id.delete_account_button);
+        resetPasswordButton = findViewById(R.id.reset_password_button);
+        readDataButton = findViewById(R.id.get_database_data_button);
 
         user = auth.getCurrentUser();
 
-        Button loginButton = (Button) findViewById(R.id.button_to_spotify);
-
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent  = new Intent(getApplicationContext(), SpotifyActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-
-        //getToken();
-
-        //getCode();
-
-
+        sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        sharedViewModel.getTopTracks().observe(this, this::updateTopTracksTextView);
+        sharedViewModel.getUserName().observe(this, this::updateUserNameTextView);
 
 
         if (user == null) {
+            //login NOT DONE
             Intent intent = new Intent(getApplicationContext(), Login.class);
             startActivity(intent);
             finish();
         } else {
-            textView.setText(String.format("Welcome back %s", user.getEmail()));
+            welcome_user_text.setText(String.format("Welcome back, %s", user.getEmail()));
         }
 
 
+
+        spotifyLoginButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+//                String clientID = SpotAPIActivity.CLIENT_ID;
+//                String redirectURI = SpotAPIActivity.REDIRECT_URI;
+//                String scopes = SpotAPIActivity.SCOPES;
+                Intent intent = new Intent(getApplicationContext(), SpotAPIActivity.class);
+                startActivity(intent);
+                finish();
+//                spotify_login_text.setText("Access code: " + SpotAPIActivity.mAccessCode.toString());
+
+//                AuthorizationRequest.Builder builder = new AuthorizationRequest.Builder(clientID, AuthorizationResponse.Type.TOKEN, redirectURI);
+//                builder.setScopes(new String[]{scopes});
+//                AuthorizationRequest request = builder.build();
+//                AuthorizationClient.openLoginActivity(MainActivity.this, SpotAPIActivity.AUTH_TOKEN_REQUEST_CODE, request);
+            }
+        });
 
         sign_out_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,7 +142,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 Toast.makeText(MainActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
+
                 FirebaseAuth.getInstance().signOut();
+//                logoutFromSpotify();
                 Intent intent  = new Intent(getApplicationContext(), Login.class);
                 startActivity(intent);
                 finish();
@@ -183,7 +188,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        addDatabase();
+        checkDeleteAccountButton();
+//
+        checkResetPasswordButton();
+//
+        createDatabase();
+
+        readDataButton();
 
 
     //ADD action bar
@@ -214,15 +225,62 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private Uri getRedirectUri() {
-        return Uri.parse(SpotifyInfo.REDIRECT_URI);
+    public void checkResetPasswordButton() {
+
+        String emailAddress = user.getEmail();
+
+        assert emailAddress != null;
+        auth.sendPasswordResetEmail(emailAddress)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("Password Reset", "Email sent.");
+                            Toast.makeText(MainActivity.this, "Email sent to reset password", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+    public void readDataButton() {
+
+        readDataButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getUserPref("rishimj");
+            }
+        });
+
+    }
+
+    public void checkDeleteAccountButton() {
+        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                user.delete()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d("User Account Delete", "User account deleted.");
+
+                                }
+                            }
+                        });
+                Intent intent  = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+//                finish();
+            }
+        });
     }
 
 
+    FirebaseDatabase database;
+    DatabaseReference databaseReference;
     public void addDatabase() {
         // Write a message to the database
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("message");
+        database = FirebaseDatabase.getInstance("ttps://spotify-wrapped-21aab-default-rtdb.firebaseio.com/");
+        DatabaseReference myRef = database.getReference();
         //myRef.setValue("Hello, World!");
 
         HashMap<String, Object> map = new HashMap<>();
@@ -248,6 +306,82 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+    DataSnapshot userData;
+    public void createDatabase() {
+        database = FirebaseDatabase.getInstance("ttps://spotify-wrapped-21aab-default-rtdb.firebaseio.com/");
+        databaseReference = database.getReference();
+
+        databaseReference.child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userData = dataSnapshot;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // do nothing
+            }
+        });
+    }
+
+    public void addUser(String username, int pref) {
+        DatabaseReference userRef = databaseReference.child("users").child(username);
+        userRef.setValue(username);
+        userRef.child("pref").setValue(pref);
+
+        databaseReference.child("users").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userData = dataSnapshot;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // do nothing
+            }
+        });
+
+
+    }
+
+
+
+    public void getUserPref(String username) {
+        /*
+        databaseReference.child("users").child(username).child("pref").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                userData = dataSnapshot;
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // do nothing
+            }
+        });*/
+
+
+        int pref = userData.child(username).child("pref").getValue(Integer.class);
+        Toast.makeText(MainActivity.this, String.format("User Preference %d", pref), Toast.LENGTH_SHORT).show();
+
+    }
+//    private void retrieveAndUseSpotifyCredentials(String userID) {
+//        credentialsRef =
+//    }
+
+    private void updateTopTracksTextView(String[] topTracks) {
+        StringBuilder sb = new StringBuilder();
+        for (String track : topTracks) {
+            sb.append(track).append("\n");
+        }
+//        tracks.setText(userName);
+    }
+
+    private void updateUserNameTextView(String userName) {
+        if (userName != null) {
+            spotify_login_text.setText(userName);
+        }
     }
 
     @Override

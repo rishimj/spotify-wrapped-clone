@@ -8,12 +8,10 @@ import androidx.core.app.NotificationCompat;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
-
+import android.content.Intent;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
-import android.content.Intent;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,11 +33,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+//import com.google.firebase.database.DataSnapshot;
+//import com.google.firebase.database.DatabaseError;
+//import com.google.firebase.database.DatabaseReference;
+//import com.google.firebase.database.FirebaseDatabase;
+//import com.google.firebase.database.ValueEventListener;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -50,12 +48,10 @@ import android.widget.Toast;
 import java.util.HashMap;
 
 import android.widget.*;
-
 public class SettingsActivity extends AppCompatActivity {
     Switch darkModeSwitch;
     TextView settingText;
     Spinner notificationSpinner;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +81,16 @@ public class SettingsActivity extends AppCompatActivity {
                 R.array.notification_options, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         notificationSpinner.setAdapter(adapter);
+//        if (savedInstanceState == null) {
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .replace(R.id.settings, new SettingsFragment())
+//                    .commit();
+//        }
+//        ActionBar actionBar = getSupportActionBar();
+//        if (actionBar != null) {
+//            actionBar.setDisplayHomeAsUpEnabled(true);
+//        }
     }
 
     private void updateSwitchState() {
@@ -119,5 +125,13 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPriority(priority);
 
         notificationManager.notify(1, builder.build());
+    }
+
+
+    public static class SettingsFragment extends PreferenceFragmentCompat {
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(R.xml.root_preferences, rootKey);
+        }
     }
 }

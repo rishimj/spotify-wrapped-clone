@@ -17,17 +17,6 @@
         android:theme="@style/Theme.SpotifyWrapped"
         tools:targetApi="31">
         <activity
-            android:name=".SpotifyActivity"
-            android:exported="false"
-            android:label="@string/title_activity_spotify"
-            android:theme="@style/Theme.SpotifyWrapped" >
-        <intent-filter>
-            <data
-                android:host="auth"
-                android:scheme="com.example.spotifywrapped" />
-        </intent-filter>
-        </activity>
-        <activity
             android:name=".SettingsActivity"
             android:exported="false"
             android:label="@string/title_activity_settings" />
@@ -42,8 +31,25 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
+        <!-- testing the SPOTIFY -->
+
+        <activity
+            android:name=".SpotAPIActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <data
+                    android:host="auth"
+                    android:scheme="com.example.spotifywrapped"/>
+            </intent-filter>
+        </activity>
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -55,6 +61,9 @@
                     android:scheme="com.example.spotifywrapped" />
             </intent-filter>
         </activity>
+
+
+
         <activity
             android:name=".GoogleSignInActivity"
             android:label="@string/app_name" />

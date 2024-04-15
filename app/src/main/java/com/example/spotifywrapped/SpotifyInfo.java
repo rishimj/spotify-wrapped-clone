@@ -22,9 +22,10 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class SpotifyInfo {
-    public static String CLIENT_ID = "3b650a17fcad42fd9711dcc6e0c510a5";
+    public static String CLIENT_ID = "4560b5dacac741808ab90c6b7d585003";
     public static int AUTH_TOKEN_REQUEST_CODE = 0;
     public static final int AUTH_CODE_REQUEST_CODE = 1;
     public static String REDIRECT_URI = "com.example.spotifywrapped://auth";
+    public static String[] SCOPES = {"user-top-read", "user-read-recently-played", "user-library-modify","user-library-read","playlist-modify-public","playlist-modify-private","user-read-email","user-read-private","user-read-birthdate","playlist-read-private","playlist-read-collaborative"};
 
 }
