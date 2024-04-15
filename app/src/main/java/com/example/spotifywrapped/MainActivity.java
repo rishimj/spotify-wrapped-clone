@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth auth;
     Button sign_out_button;
     Button settingsButton;
-    Button backgroundModeButton;
     Button spotifyLoginButton;
     TextView welcome_user_text;
     TextView spotify_login_text;
@@ -79,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         sign_out_button = findViewById(R.id.sign_out_button);
         settingsButton = findViewById(R.id.settings);
         welcome_user_text = findViewById(R.id.user_details);
-        backgroundModeButton = findViewById(R.id.background_mode_button);
         spotifyLoginButton = findViewById(R.id.spotifyAPI_login);
 //        spotify_login_text = findViewById(R.id.spotify_user_logged);
         deleteAccountButton = findViewById(R.id.delete_account_button);
@@ -161,32 +159,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
-            isNightModeOn = false;
-            backgroundModeButton.setText("Enable Dark Mode");
-        } else if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            isNightModeOn = true;
-            backgroundModeButton.setText("Disable Dark Mode");
-        } else {
-            isNightModeOn = false;
-            backgroundModeButton.setText("Enable Dark Mode");
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-
-        backgroundModeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isNightModeOn) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    backgroundModeButton.setText("Enable Dark Mode");
-                    isNightModeOn = false;
-                } else {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    backgroundModeButton.setText("Disable Dark Mode");
-                    isNightModeOn = true;
-                }
-            }
-        });
 
         checkDeleteAccountButton();
 //

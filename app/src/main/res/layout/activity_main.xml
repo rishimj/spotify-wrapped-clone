@@ -4,25 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
-    tools:context=".MainActivity"
+    android:orientation="vertical"
     android:padding="15dp"
-
-    android:orientation="vertical">
+    tools:context=".MainActivity">
 
     <TextView
         android:id="@+id/user_details"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/sign_out"
-        android:textSize="20sp"
-        android:fontFamily="@font/circular_book"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="15dp" />
-
-    <TextView
-        android:id="@+id/mainActivityWelcomeHeading"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -30,29 +17,48 @@
         android:textSize="30sp"
         android:fontFamily="@font/circular_std_bold"
         android:layout_marginBottom="15dp" />
+    <Button
+        android:id="@+id/delete_account_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="#D3D3D3"
+        android:text="Delete Account"
+        android:fontFamily="@font/circular_book" />
+
+    <Button
+        android:id="@+id/reset_password_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="#D3D3D3"
+        android:text="Reset Password"
+        android:fontFamily="@font/circular_book" />
+
+    <Button
+        android:id="@+id/settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="#D3D3D3"
+        android:text="@string/settings"
+        android:fontFamily="@font/circular_book" />
 
     <Button
         android:id="@+id/spotifyAPI_login"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
         android:fontFamily="@font/circular_std_bold"
         android:gravity="center"
-        android:text="Connect Spotify Account" />
-
-
-<!--    <TextView-->
-<!--        android:id="@+id/spotify_user_logged"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="10dp"-->
-<!--        android:text="@string/spotify_user_text" />-->
+        android:text="Connect Spotify Account"
+        android:backgroundTint ="@color/blue" />
 
     <Button
         android:id="@+id/sign_out_button"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
         android:fontFamily="@font/circular_book"
@@ -60,59 +66,19 @@
         android:text="@string/sign_out" />
 
     <Button
-        android:id="@+id/settings"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
-        android:fontFamily="@font/circular_book"
-        android:gravity="center"
-        android:text="@string/settings" />
-
-    <Button
-        android:id="@+id/background_mode_button"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
-        android:fontFamily="@font/circular_book"
-        android:gravity="center"
-        android:text="@string/disable_dark_mode" />
-
-
-    <Button
         android:id="@+id/get_database_data_button"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="15dp"
         android:fontFamily="@font/circular_book"
         android:text="Get Data" />
 
     <Button
-        android:id="@+id/reset_password_button"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
-        android:fontFamily="@font/circular_book"
-        android:text="Reset Password" />
-
-    <Button
-        android:id="@+id/delete_account_button"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
-        android:backgroundTint="#9E4848"
-        android:fontFamily="@font/circular_book"
-        android:text="Delete Account" />
-
-
-    <Button
         android:id="@+id/button_to_spotify"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="15dp"
         android:text="Log in to your Spotify account" />
 
 </LinearLayout>

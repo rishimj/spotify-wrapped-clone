@@ -1,57 +1,35 @@
 package com.example.spotifywrapped;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import androidx.core.app.NotificationCompat;
-import android.content.res.Configuration;
+
 import android.graphics.Color;
 import android.os.Bundle;
-import android.content.Intent;
-import androidx.appcompat.app.ActionBar;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
-import com.example.spotifywrapped.databinding.ActivityMainBinding;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 //import com.google.firebase.database.DataSnapshot;
 //import com.google.firebase.database.DatabaseError;
 //import com.google.firebase.database.DatabaseReference;
 //import com.google.firebase.database.FirebaseDatabase;
 //import com.google.firebase.database.ValueEventListener;
 
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.HashMap;
 
 import android.widget.*;
 public class SettingsActivity extends AppCompatActivity {
     Switch darkModeSwitch;
     TextView settingText;
     Spinner notificationSpinner;
+    Button backToM;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +38,18 @@ public class SettingsActivity extends AppCompatActivity {
         // Initialization
         darkModeSwitch = findViewById(R.id.switchDarkMode);
         settingText = findViewById(R.id.settingsbegin);
+        backToM = findViewById(R.id.backToMainActivityButton);
 
         // Update switch state based on the current mode
         updateSwitchState();
 
         // Set the listener
+        backToM.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backToMain(MainActivity.class);
+            }
+        });
         darkModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -126,7 +111,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         notificationManager.notify(1, builder.build());
     }
-
+    public void backToMain(Class<MainActivity> view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+    }
 
     public static class SettingsFragment extends PreferenceFragmentCompat {
         @Override
@@ -134,4 +123,5 @@ public class SettingsActivity extends AppCompatActivity {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
         }
     }
+
 }
