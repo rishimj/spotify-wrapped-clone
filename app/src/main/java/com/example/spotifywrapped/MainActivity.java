@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedViewModel sharedViewModel;
 
     static FirebaseAuth auth;
-    Button sign_out_button;
+
     Button settingsButton;
     Button spotifyLoginButton;
     TextView welcome_user_text;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         auth = FirebaseAuth.getInstance();
-        sign_out_button = findViewById(R.id.sign_out_button);
+
         settingsButton = findViewById(R.id.settings);
         welcome_user_text = findViewById(R.id.user_details);
         spotifyLoginButton = findViewById(R.id.spotifyAPI_login);
@@ -118,33 +118,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        sign_out_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
-                    @Override
-                    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                        if (firebaseAuth.getCurrentUser() == null) {
 
-                            GoogleSignInOptions gso = new GoogleSignInOptions.
-                                    Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
-                                    build();
-
-                            GoogleSignInClient googleSignInClient=GoogleSignIn.getClient(getApplicationContext(),gso);
-                            googleSignInClient.signOut();
-
-                        }
-                    }
-                });
-                Toast.makeText(MainActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
-
-                FirebaseAuth.getInstance().signOut();
-//                logoutFromSpotify();
-                Intent intent  = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         settingsButton.setOnClickListener(new View.OnClickListener() {
             @Override

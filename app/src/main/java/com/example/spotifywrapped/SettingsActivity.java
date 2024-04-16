@@ -31,6 +31,9 @@ import android.widget.TextView;
 
 import android.widget.*;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Firebase;
@@ -43,6 +46,7 @@ public class SettingsActivity extends AppCompatActivity {
     Button backToM;
     Button deleteAccountButton;
     Button resetPasswordButton;
+    Button sign_out_button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
         backToM = findViewById(R.id.backToMainActivityButton);
         deleteAccountButton = findViewById(R.id.delete_account_button);
         resetPasswordButton = findViewById(R.id.reset_password_button);
+        sign_out_button = findViewById(R.id.sign_out_button);
 
         // Update switch state based on the current mode
         updateSwitchState();
@@ -64,6 +69,33 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 backToMain(MainActivity.class);
+            }
+        });
+        sign_out_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FirebaseAuth.getInstance().addAuthStateListener(new FirebaseAuth.AuthStateListener() {
+                    @Override
+                    public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                        if (firebaseAuth.getCurrentUser() == null) {
+
+                            GoogleSignInOptions gso = new GoogleSignInOptions.
+                                    Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
+                                    build();
+
+                            GoogleSignInClient googleSignInClient= GoogleSignIn.getClient(getApplicationContext(),gso);
+                            googleSignInClient.signOut();
+
+                        }
+                    }
+                });
+                Toast.makeText(SettingsActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
+
+                FirebaseAuth.getInstance().signOut();
+//                logoutFromSpotify();
+                Intent intent  = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+                finish();
             }
         });
         darkModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
