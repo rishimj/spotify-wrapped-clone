@@ -1,8 +1,12 @@
 package com.example.spotifywrapped;
+import static com.example.spotifywrapped.MainActivity.auth;
+
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Build;
+
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
 import android.graphics.Color;
@@ -11,6 +15,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceFragmentCompat;
 
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -25,11 +30,19 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import android.widget.*;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.FirebaseAuth;
+
 public class SettingsActivity extends AppCompatActivity {
     Switch darkModeSwitch;
     TextView settingText;
     Spinner notificationSpinner;
     Button backToM;
+    Button deleteAccountButton;
+    Button resetPasswordButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,11 +52,14 @@ public class SettingsActivity extends AppCompatActivity {
         darkModeSwitch = findViewById(R.id.switchDarkMode);
         settingText = findViewById(R.id.settingsbegin);
         backToM = findViewById(R.id.backToMainActivityButton);
+        deleteAccountButton = findViewById(R.id.delete_account_button);
+        resetPasswordButton = findViewById(R.id.reset_password_button);
 
         // Update switch state based on the current mode
         updateSwitchState();
+        checkResetPasswordButton();
+        checkDeleteAccountButton();
 
-        // Set the listener
         backToM.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -122,6 +138,41 @@ public class SettingsActivity extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.root_preferences, rootKey);
         }
+    }
+
+    public void checkResetPasswordButton() {
+        String emailAddress = MainActivity.user.getEmail();
+
+        assert emailAddress != null;
+        MainActivity.auth.sendPasswordResetEmail(emailAddress).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("Password Reset", "Email sent.");
+                            Toast.makeText(SettingsActivity.this, "Email sent to reset password", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+    public void checkDeleteAccountButton() {
+        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.user.delete()
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d("User Account Delete", "User account deleted.");
+
+                                }
+                            }
+                        });
+                Intent intent  = new Intent(getApplicationContext(), Login.class);
+                startActivity(intent);
+//                finish();
+            }
+        });
     }
 
 }

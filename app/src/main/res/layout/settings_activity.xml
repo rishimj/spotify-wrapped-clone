@@ -28,12 +28,6 @@
         android:layout_marginTop="24dp"
         android:layout_marginBottom="16dp"/>
 
-    <Spinner
-        android:id="@+id/spinnerNotificationSettings"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"/>
-
     <TextView
         android:id="@+id/textViewNotificationSettings"
         android:layout_width="match_parent"
@@ -48,12 +42,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <!-- Back Button -->
     <Button
         android:id="@+id/backToMainActivityButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Back to Main"
-        android:onClick="onBackClicked" />
+        android:onClick="onBackClicked"
+        android:layout_marginTop="10dp" />
+    <Button
+        android:id="@+id/reset_password_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="#D3D3D3"
+        android:text="Reset Password"
+        android:fontFamily="@font/circular_book" />
+    <Button
+        android:id="@+id/delete_account_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="#AB0000"
+        android:text="Delete Account"
+        android:fontFamily="@font/circular_book" />
 
 </LinearLayout>

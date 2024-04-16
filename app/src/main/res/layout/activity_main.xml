@@ -17,23 +17,7 @@
         android:textSize="30sp"
         android:fontFamily="@font/circular_std_bold"
         android:layout_marginBottom="15dp" />
-    <Button
-        android:id="@+id/delete_account_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:backgroundTint="#D3D3D3"
-        android:text="Delete Account"
-        android:fontFamily="@font/circular_book" />
 
-    <Button
-        android:id="@+id/reset_password_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:backgroundTint="#D3D3D3"
-        android:text="Reset Password"
-        android:fontFamily="@font/circular_book" />
 
     <Button
         android:id="@+id/settings"

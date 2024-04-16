@@ -53,18 +53,16 @@ public class MainActivity extends AppCompatActivity {
     private static final int TOP_TRACKS_REQUEST_CODE = 2;
     private SharedViewModel sharedViewModel;
 
-    FirebaseAuth auth;
+    static FirebaseAuth auth;
     Button sign_out_button;
     Button settingsButton;
     Button spotifyLoginButton;
     TextView welcome_user_text;
     TextView spotify_login_text;
 
-    Button deleteAccountButton;
 
-    Button resetPasswordButton;
     Button readDataButton;
-    FirebaseUser user;
+    static FirebaseUser user;
     boolean isNightModeOn;
 
     @Override
@@ -80,8 +78,7 @@ public class MainActivity extends AppCompatActivity {
         welcome_user_text = findViewById(R.id.user_details);
         spotifyLoginButton = findViewById(R.id.spotifyAPI_login);
 //        spotify_login_text = findViewById(R.id.spotify_user_logged);
-        deleteAccountButton = findViewById(R.id.delete_account_button);
-        resetPasswordButton = findViewById(R.id.reset_password_button);
+
         readDataButton = findViewById(R.id.get_database_data_button);
 
         user = auth.getCurrentUser();
@@ -160,9 +157,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        checkDeleteAccountButton();
-//
-        checkResetPasswordButton();
+
 //
         createDatabase();
 
@@ -197,22 +192,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void checkResetPasswordButton() {
 
-        String emailAddress = user.getEmail();
-
-        assert emailAddress != null;
-        auth.sendPasswordResetEmail(emailAddress)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d("Password Reset", "Email sent.");
-                            Toast.makeText(MainActivity.this, "Email sent to reset password", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
-    }
 
     public void readDataButton() {
 
@@ -225,26 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void checkDeleteAccountButton() {
-        deleteAccountButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                user.delete()
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d("User Account Delete", "User account deleted.");
 
-                                }
-                            }
-                        });
-                Intent intent  = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-//                finish();
-            }
-        });
-    }
 
 
     FirebaseDatabase database;
