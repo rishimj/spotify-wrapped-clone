@@ -21,6 +21,8 @@ android {
         manifestPlaceholders["redirectHostName"] = "auth"
 //        manifestPlaceholders = [redirectSchemeName: "com.example.spotifywrapped", redirectHostName: "auth"]
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+        multiDexEnabled = true
     }
 
     buildTypes {
@@ -59,6 +61,7 @@ dependencies {
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.android.support:appcompat-v7:23.2.0")
     implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation("androidx.navigation:navigation-fragment:2.7.6")

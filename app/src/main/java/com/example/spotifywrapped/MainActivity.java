@@ -36,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,11 +56,12 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseAuth auth;
     Button sign_out_button;
-    Button settingsButton;
+    ImageButton settingsButton;
     Button backgroundModeButton;
     Button spotifyLoginButton;
     TextView welcome_user_text;
     TextView spotify_login_text;
+    TextView welcome_gmail_text;
 
     Button deleteAccountButton;
 
@@ -79,12 +81,13 @@ public class MainActivity extends AppCompatActivity {
         sign_out_button = findViewById(R.id.sign_out_button);
         settingsButton = findViewById(R.id.settings);
         welcome_user_text = findViewById(R.id.user_details);
+        welcome_gmail_text = findViewById(R.id.user_email_welcome);
         backgroundModeButton = findViewById(R.id.background_mode_button);
         spotifyLoginButton = findViewById(R.id.spotifyAPI_login);
 //        spotify_login_text = findViewById(R.id.spotify_user_logged);
         deleteAccountButton = findViewById(R.id.delete_account_button);
         resetPasswordButton = findViewById(R.id.reset_password_button);
-        readDataButton = findViewById(R.id.get_database_data_button);
+//        readDataButton = findViewById(R.id.get_database_data_button);
 
         user = auth.getCurrentUser();
 
@@ -99,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         } else {
-            welcome_user_text.setText(String.format("Welcome back, %s", user.getEmail()));
+            welcome_user_text.setText(String.format("Welcome back,"));
+            welcome_gmail_text.setText(user.getEmail());
         }
 
 
@@ -194,34 +198,7 @@ public class MainActivity extends AppCompatActivity {
 //
         createDatabase();
 
-        readDataButton();
-
-
-    //ADD action bar
-
-
-        //setSupportActionBar(binding.toolbar);
-
-        //Intent googleIntent = new Intent(MainActivity.this, GoogleSignInActivity.class);
-        //MainActivity.this.startActivity(googleIntent);
-
-
-
-        /*NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
-            }
-        });*/
-
-
-
+//        readDataButton();
 
     }
 
@@ -242,16 +219,16 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public void readDataButton() {
-
-        readDataButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getUserPref("rishimj");
-            }
-        });
-
-    }
+//    public void readDataButton() {
+//
+//        readDataButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                getUserPref("rishimj");
+//            }
+//        });
+//
+//    }
 
     public void checkDeleteAccountButton() {
         deleteAccountButton.setOnClickListener(new View.OnClickListener() {
