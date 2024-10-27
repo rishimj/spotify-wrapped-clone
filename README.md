@@ -6,13 +6,6 @@
 
 The Spotify Wrapped Clone is an Android application that provides users with personalized music summaries, similar to Spotify’s Wrapped feature. Users can view weekly, monthly, and yearly summaries, gain insights into their listening habits, and enjoy various interactive features such as song previews, recommendations, and seasonal themes.
 
-### Screenshots
-
-![Top Songs View](images/Screenshot-2024-10-27-3.40.54.png)
-*View of the user's top songs, including playback snippets for a more immersive experience.*
-
-![Top Artist View](images/Screenshot-2024-10-27-3.43.12.png)
-*View of the user's top artist, with personalized genre insights.*
 
 ## Table of Contents
 
