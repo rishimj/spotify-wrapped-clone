@@ -1,10 +1,18 @@
 # Spotify Wrapped Clone
 
-**Members**: Rishi Manimaran, Bryce Lin, Nathan Lin, Zixiang Lin, Jacoby Melton, Anshul
+**Members**: Bryce Lin, Nathan Lin, Zixiang Lin, Rishi Jay Manimaran, Jacoby Melton, Anshul
 
 ## Project Overview
 
 The Spotify Wrapped Clone is an Android application that provides users with personalized music summaries, similar to Spotify’s Wrapped feature. Users can view weekly, monthly, and yearly summaries, gain insights into their listening habits, and enjoy various interactive features such as song previews, recommendations, and seasonal themes.
+
+### Screenshots
+
+![Top Songs View](images/Screenshot-2024-10-27-3.40.54.png)
+*View of the user's top songs, including playback snippets for a more immersive experience.*
+
+![Top Artist View](images/Screenshot-2024-10-27-3.43.12.png)
+*View of the user's top artist, with personalized genre insights.*
 
 ## Table of Contents
 
@@ -22,7 +30,7 @@ Our team follows clear task ownership to ensure smooth collaboration:
 
 - **Scrum Master**: Nathan, Bryce
 - **Product Owner**: Jacoby
-- **Developers**: Rishi, Nathan, Zixiang, Jacoby, Bryce
+- **Developers**: Nathan, Zixiang, Rishi, Jacoby, Bryce
 - **Technical Support**: Anshul
 - **Documentation**: Bryce
 
