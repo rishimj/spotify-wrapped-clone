@@ -1,6 +1,6 @@
 # Spotify Wrapped Clone
 
-**Members**: Rishi Manimaran, Bryce Lin, Nathan Lin, Zixiang Lin, Jacoby Melton, Anshul
+**Members**: Bryce Lin, Nathan Lin, Zixiang Lin, Jacoby Melton, Anshul, Rishi Manimaran 
 
 ## Project Overview
 
@@ -23,7 +23,7 @@ Our team follows clear task ownership to ensure smooth collaboration:
 
 - **Scrum Master**: Nathan, Bryce
 - **Product Owner**: Jacoby
-- **Developers**: Rishi, Nathan, Zixiang, Jacoby, Bryce
+- **Developers**: Nathan, Zixiang, Jacoby, Bryce, Rishi Manimaran
 - **Technical Support**: Anshul
 - **Documentation**: Bryce
 
